@@ -233,7 +233,6 @@ class Culture24API {
     $this->_reset();
     $this->_request = $this->_get_base_id_query($id);
     $this->_request .= $this->_get_request_arg('elements');
-    //echo $this->_request;
     if ($this->_request()) {
       $this->_found = 1;
       $this->_records[0] = $this->_data_parsed->result;
@@ -771,5 +770,4 @@ class Culture24API {
     }
     return set_transient('c24_event_validation_errors', $cache, 7 * (60 * 60 * 24));
   }
-
 }

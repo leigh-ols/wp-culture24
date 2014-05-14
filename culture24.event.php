@@ -233,5 +233,4 @@ class Culture24Event extends Culture24Class {
   public function get_concessions() {
     return $this->get_property('concessionsAvailable');
   }
-
 }
