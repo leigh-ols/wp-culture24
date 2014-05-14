@@ -19,11 +19,13 @@ If you wish to try the supplied map code put [gmap3.js](https://github.com/jbdem
 
 ### Installation
 
-Clone or extract the files to wp-content/plugins/culture24
+Clone or extract the files to wp-content/plugins/wp-culture24
 
 Enable the plugin via the admin control panel
 
 Enter your API key via the wp-admin/culture24/settings page
+
+Add [c24page] shortcode to a wordpress page.
 
 The plugin provides admin pages for testing and building queries
 

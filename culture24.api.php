@@ -125,6 +125,10 @@ class Culture24API {
    */
   protected $_tag = '';
 
+  protected $_tagExact = '';
+
+  protected $_tagText = '';
+
   /**
    * @var string
    */
@@ -229,6 +233,7 @@ class Culture24API {
     $this->_reset();
     $this->_request = $this->_get_base_id_query($id);
     $this->_request .= $this->_get_request_arg('elements');
+    //echo $this->_request;
     if ($this->_request()) {
       $this->_found = 1;
       $this->_records[0] = $this->_data_parsed->result;
@@ -236,6 +241,17 @@ class Culture24API {
       return TRUE;
     }
     return FALSE;
+  }
+
+  /**
+   * Getter for _data_raw
+   * @return string
+   */
+  public function get_data_raw() {
+      if($this->_data_raw) {
+          return $this->_data_raw;
+      }
+      return null;
   }
 
   /**
@@ -248,6 +264,8 @@ class Culture24API {
     $this->_request .= $this->_get_request_arg('limit');
     $this->_request .= $this->_get_request_arg('offset');
     $this->_request .= $this->_get_request_arg('tag');
+    $this->_request .= $this->_get_request_arg('tagExact');
+    $this->_request .= $this->_get_request_arg('tagText');
     $this->_request .= $this->_get_request_arg('type');
     $this->_request .= $this->_get_request_arg('name');
     $this->_request .= $this->_get_request_arg('elements');
@@ -275,6 +293,8 @@ class Culture24API {
       $this->_error = FALSE;
       $this->_attempt++;
       $this->_response = wp_remote_get($this->_request);
+      if(isset($_GET['show_feed_url']))
+          echo $this->_request;
       $this->_error = wp_remote_retrieve_response_code($this->_response) !== 200;
       if (!$this->_error) {
         $this->_data_raw = wp_remote_retrieve_body($this->_response);
@@ -372,10 +392,16 @@ class Culture24API {
         if (!empty($this->_region)) {
           $tags .= $this->_region;
         }
-        $tags = trim($tags, ',');
+        @$tags = trim($tags, ',');
         $tags = str_replace(' ', '+', $tags);
         $result = '&q.contentTag=' . $tags;
         break;
+      case 'tagExact':
+          $result = '&q.contentTag.exact='.$this->_tagExact;
+          break;
+      case 'tagText':
+          $result = '&q.contentTag.text='.$this->_tagText;
+          break;
       case 'type':
         if (!empty($this->_type)) {
           $result = '&q.type=' . str_replace(' ', '+', $this->_type);

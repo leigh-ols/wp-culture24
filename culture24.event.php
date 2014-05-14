@@ -132,7 +132,13 @@ class Culture24Event extends Culture24Class {
    * @return string
    */
   public function get_url() {
-    return $this->get_property('url');
+    $result = trim($this->get_property('url'),'\t\n\r\0\x0B/');
+    if(strlen($result) > 0){
+        if ((stripos($result, "http://") === false) && (stripos($result, "https://") === false)){
+            $result = "http://" . $result;
+        }
+    }
+    return $result;
   }
 
   /**
