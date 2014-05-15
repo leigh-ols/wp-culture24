@@ -17,6 +17,7 @@
     </div>
 
     <div class="c24form__audiencec">
+        <label for="audience" class="c24form__audiencelabel">Audience</label>
         <select id="audience" class="c24form__audience" name="audience">
             <option value="">Audience</option>
             <?php foreach ($c24audiences as $v) : ?>
@@ -26,6 +27,7 @@
     </div>
 
     <div class="c24form__typec">
+        <label for="type" class="c24form__typelabel">Type</label>
         <select id="type" class="c24form__type" name="type">
             <option value="">Type</option>
             <?php foreach ($c24types as $v) : ?>

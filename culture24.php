@@ -199,7 +199,7 @@ class culture24admin {
 }
 
 $c24admin = new culture24admin();
-require_once $pwd . '/themes/' . $c24admin->get_option('theme', 'default_theme') . '/functions.php';
+require_once $pwd . '/themes/' . $c24admin->get_option('theme', 'default-theme') . '/functions.php';
 // MISC USEFUL FUNCS
 
 function c24_view_event_debug($obj, $full = FALSE) {
