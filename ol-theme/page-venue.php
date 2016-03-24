@@ -17,8 +17,8 @@ global $c24venue;
 $c24img = $c24venue->get_image_url();
 $c24title = $c24venue->get_name();
 $c24description = $c24venue->get_description();
-$c24url = $c24venue->get_url();
-$c24location = $c24venue->get_location_string();
+$c24url = $c24venue->get_url()."#c24events";
+$c24location = $c24venue->get_address_string();
 //@TODO check up on this 'instance' mallarky,.. when is there more than one?
 $c24charges = $c24venue->get_charges();
 
@@ -37,7 +37,7 @@ if ($obj->requestSet()) {
     $c24error = $obj->get_message();
 }
 ?>
-<div class="c24venue">
+<div id="c24events" class="c24venue">
     <div class="entry-header content-block">
         <h1 class="c24venue__title"><?php echo $c24title ?></h1>
     </div>
@@ -62,7 +62,10 @@ if ($obj->requestSet()) {
         <h3 class="c24venue__heading">Links</h3>
         <?php
         foreach ($c24url as $url) {
-            echo '<a href="'.$url.'">'.$url.'</a>';
+            if (!strpos('http://', $url)) {
+                $url = 'http://'.$url;
+            }
+            echo '<a href="'.$url.'">'.$url.'</a><br/>';
         }
         ?>
     </div>

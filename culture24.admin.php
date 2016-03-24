@@ -4,10 +4,10 @@
   <p>Plugin Version 1.0.2</p>
   <div id="c24-admin">
     <form method="post" action="options.php">
-      <?php
-      settings_fields('c24_options_group_api');
-      do_settings_sections('c24-settings-api');
-      ?>
+<?php
+settings_fields('c24_options_group_api');
+do_settings_sections('c24-settings-api');
+?>
       <?php submit_button(); ?>
     </form>
 

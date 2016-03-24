@@ -4,7 +4,8 @@
  *
  * @return void
  */
-function c24script() {
+function c24script()
+{
     wp_register_script('c24', '/wp-content/plugins/wp-culture24/js.js', array('jquery', 'jquery-ui-datepicker'));
     wp_enqueue_script('jquery-ui-datepicker');
     wp_enqueue_script('c24');
@@ -16,7 +17,8 @@ add_action('wp_enqueue_scripts', 'c24script');
  *
  * @return void
  */
-function c24style() {
+function c24style()
+{
     // Styles are held in our theme.
 }
 add_action('wp_enqueue_styles', 'c24style');
@@ -26,13 +28,14 @@ add_action('wp_enqueue_styles', 'c24style');
  *
  * @return void
  */
-function c24Page() {
-    if(isset($_GET['c24event'])) {
+function c24Page()
+{
+    if (isset($_GET['c24event'])) {
         c24DisplayEvent();
         return;
     }
 
-    if(isset($_GET['c24venue'])) {
+    if (isset($_GET['c24venue'])) {
         c24DisplayVenue();
         return;
     }
@@ -48,9 +51,9 @@ add_shortcode('c24page', 'c24Page');
  *
  * @return void
  */
-function c24FeedHook() {
-
-    if(isset($_GET['c24rawfeed'])) {
+function c24FeedHook()
+{
+    if (isset($_GET['c24rawfeed'])) {
         $obj = c24SetupListingObj();
         c24DisplayFeed($obj);
         die();
@@ -69,7 +72,8 @@ add_filter('init', 'c24FeedHook');
  * @param type $per_page
  * @return string
  */
-function c24pager($total_items, $per_page = 10) {
+function c24pager($total_items, $per_page = 10)
+{
     $max = ceil($total_items / $per_page);
     $pages = '';
 
@@ -97,15 +101,16 @@ function c24pager($total_items, $per_page = 10) {
  *
  * @return void
  */
-function c24DisplayEvent() {
+function c24DisplayEvent()
+{
     global $c24event;
     $options = array(
         'query_type' => CULTURE24_API_EVENTS
     );
     $obj = new Culture24API($options);
-    if($obj->requestID($_GET['c24event'])) {
+    if ($obj->requestID($_GET['c24event'])) {
         $c24objects = $obj->get_objects();
-        foreach($c24objects as $object) {
+        foreach ($c24objects as $object) {
             $c24event = $object;
             include 'page-event.php';
         }
@@ -120,7 +125,8 @@ function c24DisplayEvent() {
  *
  * @return void
  */
-function c24DisplayVenue() {
+function c24DisplayVenue()
+{
     global $c24venue;
 
     $options = array(
@@ -128,9 +134,9 @@ function c24DisplayVenue() {
     );
 
     $obj = new Culture24API($options);
-    if($obj->requestID($_GET['c24venue'])) {
+    if ($obj->requestID($_GET['c24venue'])) {
         $c24objects = $obj->get_objects();
-        foreach($c24objects as $object) {
+        foreach ($c24objects as $object) {
             $c24venue = $object;
             include 'page-venue.php';
         }
@@ -147,18 +153,19 @@ function c24DisplayVenue() {
  * @return unknown
  * @modified   James G 2/5/2014 swapped tagexact and tagtext to force just East Sussex
  */
-function c24SetupListingObj() {
+function c24SetupListingObj()
+{
     global $paged;
     global $c24admin;
 
     $limit = $c24admin->get_option('epp');
     $offset = 0;
 
-    if($paged) {
+    if ($paged) {
         $offset = $paged * $limit;
     }
 
-    if($paged) {
+    if ($paged) {
         $offset = ($paged - 1) * $limit;
     }
 
@@ -210,7 +217,6 @@ function c24DisplayListing($obj)
         $c24objects = $obj->get_objects();
 
         if ($date_range = $obj->get_dates()) {
-
             $date_start = str_replace('/', '-', substr($date_range, 0, strpos($date_range, ',')));
             $date_end = str_replace('/', '-', substr($date_range, strpos($date_range, ',') + 1));
         }
@@ -223,13 +229,17 @@ function c24DisplayListing($obj)
     ?>
     <div class="c24">
 
-        <?php include 'content-event-form.php'; ?>
-        <?php c24printevents($c24objects); ?>
+        <?php include 'content-event-form.php';
+    ?>
+        <?php c24printevents($c24objects);
+    ?>
 
         <?php //@TODO get real max number of results ?>
         <div class="pagination">
-            <?php echo c24pager($obj->get_found(), $c24perpage); ?>
-            <?php $pages = $obj->get_found() / $c24perpage; ?>
+            <?php echo c24pager($obj->get_found(), $c24perpage);
+    ?>
+            <?php $pages = $obj->get_found() / $c24perpage;
+    ?>
         </div>
         <div class="c24__logoc">
             <img class="c24__logo" alt="Culture 24" src="/wp-content/plugins/wp-culture24/themes/default-theme/culture24-logo.png">
@@ -237,6 +247,7 @@ function c24DisplayListing($obj)
         </div>
     </div>
     <?php
+
 }
 
 /**
@@ -264,7 +275,8 @@ function c24printevents($events)
  *
  * @return void
  */
-function c24DisplayFeed($obj) {
+function c24DisplayFeed($obj)
+{
     if ($obj->requestSet()) {
         echo $obj->get_data_raw();
     } else {

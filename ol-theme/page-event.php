@@ -1,20 +1,28 @@
 <?php
 global $c24event;
+global $post;
+$post->post_title = '';
 //var_dump($c24event);
 $c24img = $c24event->get_image_url();
 $c24title = $c24event->get_name();
-$c24url = "?c24event=".$c24event->get_event_id();
+$c24url = "?c24event=".$c24event->get_event_id()."#c24events";
 $c24venue = $c24event->get_venue_name();
-$c24venueurlopen = '<a href="?c24venue='.$c24event->get_venue_id().'">';
+$c24venueurlopen = '<a href="?c24venue='.$c24event->get_venue_id().'#c24events">';
 $c24venueurlclose = '</a>';
 $c24description = $c24event->get_description();
 $c24type = $c24event->get_type();
-$c24location = $c24event->get_location_string();
+$c24location = $c24event->get_address_string();
 //@TODO check up on this 'instance' mallarky,.. when is there more than one?
 $c24sdate = $c24event->get_date_start(0);
 $c24edate = $c24event->get_date_end(0);
 $c24date = $c24sdate . ' - ' . $c24edate;
+$c24stime = $c24event->get_time_start(0);
+$c24etime = $c24event->get_time_end(0);
+$c24time = $c24stime . ' - ' . $c24etime;
 $c24charges = $c24event->get_charges();
+$c24img = $c24event->get_image_url_large();
+
+
 if (!$c24charges && !$c24event->get_free()) {
     $c24charges = 'Free';
 }
@@ -45,11 +53,14 @@ if (!$c24eventurl) {
     $c24eventurl = '<a href="'.$c24eventurl.'">'.$c24eventurl.'</a>';
 }
 ?>
-<div class="c24fullevent">
+<div id="c24events" class="c24fullevent">
     <div class="content-block">
         <h1 class="c24event__title"><?php echo $c24title; ?></h1>
     </div>
-    <div class="content-block c24fullevent__details">
+    <?php if (!empty($c24img)) : ?>
+        <img style="float:right;max-width:25%;" src="<?php echo $c24img; ?>" alt="event image" class="attachment-post-thumbnail wp-post-image" />
+    <?php endif; ?>
+    <div class="content-block c24event__details">
         <h3 class="c24event__venuetitle"><?php echo $c24venueurlopen.$c24venue.$c24venueurlclose; ?></h3>
         <h3 class="c24event__title"><?php echo $c24title; ?></h3>
         <dl>
@@ -59,12 +70,14 @@ if (!$c24eventurl) {
             <dd><?php echo $c24location; ?></dd>
             <dt>Date</dt>
             <dd><?php echo $c24date; ?></dd>
+            <dt>Time</dt>
+            <dd><?php echo $c24time; ?></dd>
         </dl>
     </div>
     <div class="content-block c24fullevent__description"><p><?php echo $c24description; ?></p></div>
 </div>
 
-<div class="content-block c24fullevent__further">
+<!-- <div class="content-block c24fullevent__further">
     <dl>
         <dt>Suitable for</dt>
         <dd><?php echo $c24audience; ?></dd>
@@ -77,4 +90,4 @@ if (!$c24eventurl) {
         <dt>Website</dt>
         <dd><?php echo $c24eventurl; ?></dd>
     </dl>
-</div>
+</div> -->

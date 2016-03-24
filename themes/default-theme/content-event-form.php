@@ -21,7 +21,7 @@
         <select id="audience" class="c24form__audience" name="audience">
             <option value="">Audience</option>
             <?php foreach ($c24audiences as $v) : ?>
-                <option value="<?php echo $v; ?>" <?php echo ($_GET['audience'] == $v ? 'selected' : ''); ?> ><?php echo $v; ?></option>
+                <option value="<?php echo $v; ?>" <?php echo($_GET['audience'] == $v ? 'selected' : ''); ?> ><?php echo $v; ?></option>
             <?php endforeach; ?>
         </select>
     </div>
@@ -31,7 +31,7 @@
         <select id="type" class="c24form__type" name="type">
             <option value="">Type</option>
             <?php foreach ($c24types as $v) : ?>
-                <option value="<?php echo $v; ?>" <?php echo ($_GET['type'] == $v ? 'selected' : ''); ?> ><?php echo $v; ?></option>
+                <option value="<?php echo $v; ?>" <?php echo($_GET['type'] == $v ? 'selected' : ''); ?> ><?php echo $v; ?></option>
             <?php endforeach; ?>
         </select>
     </div>

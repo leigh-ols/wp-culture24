@@ -7,37 +7,34 @@ $c24error = $c24debug = false;
 $c24regions = c24_regions();
 
 if (isset($_POST['c24'])) {
+    if (!wp_verify_nonce($_POST['c24'], 'c24-test')) {
+        die('Security check');
+    }
 
-  if (!wp_verify_nonce($_POST['c24'], 'c24-test')) {
-    die('Security check');
-  }
+    define('C24EVENTS_DEBUG', (isset($_REQUEST['debug']) ? 1 : 0));
 
-  define('C24EVENTS_DEBUG', (isset($_REQUEST['debug']) ? 1 : 0));
+    $c24objects = array();
+    $c24error = $c24debug = false;
+    $options = array(
+        'query_type' => CULTURE24_API_VENUES,
+        'offset' => $_POST['offset'],
+        'limit' => $_POST['limit'],
+        'tag' => $_POST['tag'],
+        'elements' => $_POST['elements'],
+        'keywords' => $_POST['keywords'],
+        'keyfield' => $_POST['keyfield'],
+        'region' => $_POST['region'],
+        'sort' => 'name',
+    );
+    $obj = new Culture24API($options);
 
-  $c24objects = array();
-  $c24error = $c24debug = false;
-  $options = array(
-      'query_type' => CULTURE24_API_VENUES,
-      'offset' => $_POST['offset'],
-      'limit' => $_POST['limit'],
-      'tag' => $_POST['tag'],
-      'elements' => $_POST['elements'],
-      'keywords' => $_POST['keywords'],
-      'keyfield' => $_POST['keyfield'],
-      'region' => $_POST['region'],
-      'sort' => 'name',
-  );
-  $obj = new Culture24API($options);
+    if ($obj->requestSet()) {
+        $c24objects = $obj->get_objects();
+    } else {
+        $c24error = $obj->get_message();
+    }
 
-  if ($obj->requestSet()) {
-
-    $c24objects = $obj->get_objects();
-  } else {
-
-    $c24error = $obj->get_message();
-  }
-
-  $c24debug = c24_view_event_debug($obj, isset($_REQUEST['debug-raw']));
+    $c24debug = c24_view_event_debug($obj, isset($_REQUEST['debug-raw']));
 }
 ?>
 
@@ -46,8 +43,8 @@ if (isset($_POST['c24'])) {
   .c24-events-list {
     background: #eee;
     border: 1px solid #666;
-    padding: 15px;        
-  }  
+    padding: 15px;
+  }
 </style>
 
 <div class="wrap">
@@ -68,13 +65,12 @@ if (isset($_POST['c24'])) {
         ID, name, description, tags and all address-prefixed fields.</li>
     </ul>
 
-    <?php
-    include('theme/content-venue-form.php');
+<?php
+include('theme/content-venue-form.php');
 
-    if ($c24debug) {
-
-      include('theme/content-event-debug.php');
-    }
-    ?>
+if ($c24debug) {
+    include('theme/content-event-debug.php');
+}
+?>
   </div> <!-- id="c24_admin" -->
 </div>  <!-- class="wrap" -->

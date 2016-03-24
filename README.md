@@ -63,3 +63,11 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+### LB @TODO
+Generally tidy up the code
+Clear out superfluous culture24.admin.*.php files
+Create a single admin page with all required options within it.
+Clear out superfluous theme files
+Create a single default theme
+Allow use of custom themes with option in admin for which theme to use
