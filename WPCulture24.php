@@ -71,7 +71,9 @@ class WPCulture24
      */
     public function enqueueScripts()
     {
-
+        wp_register_script('c24', __DIR__.'/assets/js/wp-culture24.js', array('jquery', 'jquery-ui-datepicker'));
+        wp_enqueue_script('jquery-ui-datepicker');
+        wp_enqueue_script('c24');
     }
 
     /**

@@ -1,27 +1,4 @@
 <?php
-/**
- * enqueue js script
- *
- * @return void
- */
-function c24script()
-{
-    wp_register_script('c24', '/wp-content/plugins/wp-culture24/js.js', array('jquery', 'jquery-ui-datepicker'));
-    wp_enqueue_script('jquery-ui-datepicker');
-    wp_enqueue_script('c24');
-}
-add_action('wp_enqueue_scripts', 'c24script');
-
-/**
- * enqueue theme styles
- *
- * @return void
- */
-function c24style()
-{
-    // Styles are held in our theme.
-}
-add_action('wp_enqueue_styles', 'c24style');
 
 /**
  * Display a page

@@ -17,14 +17,6 @@ function c24RemoveTitleFromSingleEvent($title)
 }
 add_filter('the_title', 'c24\c24RemoveTitleFromSingleEvent');
 
-function c24enqueue()
-{
-    wp_register_script('c24', '/wp-content/plugins/wp-culture24/js.js', array('jquery', 'jquery-ui-datepicker'));
-    wp_enqueue_script('jquery-ui-datepicker');
-    wp_enqueue_script('c24');
-}
-add_action('wp_enqueue_scripts', 'c24\c24enqueue');
-
 function c24Page()
 {
     global $c24event;
