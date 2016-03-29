@@ -14,7 +14,7 @@
 
 namespace c24;
 
-use c24\Service\API\Culture24API;
+use c24\Service\Api\Culture24\Api as Culture24Api;
 
 /**
  * Class WPCulture24
@@ -110,7 +110,7 @@ class WPCulture24
         // Create objects
         // $config = new \WordPressSettingsFramework
 
-        $this->services['Culture24API'] = new Culture24API();
+        $this->services['Culture24Api'] = new Culture24Api();
 
         // Hookable action
         do_action('wpculture24_init');

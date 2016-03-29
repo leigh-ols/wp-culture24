@@ -1,5 +1,5 @@
 <?php
-namespace c24\Service\API;
+namespace c24\Service\Api\Culture24;
 
 /**
  * @package Culture24
@@ -9,7 +9,7 @@ namespace c24\Service\API;
 /**
  * Class that handles Culture24 event record
  */
-class Culture24Event extends Culture24Class
+class Event extends Record
 {
 
     protected static $_default_data_elements_array = array(

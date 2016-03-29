@@ -30,7 +30,7 @@ $options = array(
     'keyfield' => 'venueID',
     'keyword'  => $_GET['c24venue']
 );
-$obj = $__c24->getService('Culture24API')->setOptions($options);
+$obj = $__c24->getService('Culture24Api')->setOptions($options);
 if ($obj->requestSet()) {
     $c24objects = $obj->get_objects();
 } else {

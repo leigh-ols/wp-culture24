@@ -1,5 +1,5 @@
 <?php
-namespace c24\Service\API;
+namespace c24\Service\Api\Culture24;
 
 /**
  * @package Culture24
@@ -9,7 +9,7 @@ namespace c24\Service\API;
 /**
  * Class that handles Culture24 requests and responses
  */
-class Culture24API
+class Api
 {
 
     /**
@@ -166,7 +166,7 @@ class Culture24API
     protected $_records = array();
 
     /**
-     * @var array of Culture24Event
+     * @var array of Event
      */
     protected $_objects = array();
 
@@ -529,9 +529,9 @@ class Culture24API
             return $this->_elements;
         }
         if ($this->_query_type == CULTURE24_API_EVENTS) {
-            return Culture24Event::get_default_data_elements();
+            return Event::get_default_data_elements();
         } elseif ($this->_query_type == CULTURE24_API_VENUES) {
-            return Culture24Venue::get_default_data_elements();
+            return Venue::get_default_data_elements();
         }
     }
 
@@ -559,7 +559,7 @@ class Culture24API
     {
         $result = array();
         foreach ($this->_records as $k => $v) {
-            $event = new Culture24Event($v);
+            $event = new Event($v);
             $errors = $event->get_validation_errors();
             if (!empty($errors)) {
                 $this->_validation_errors[$event->get_property('eventID')] = $errors;
@@ -577,7 +577,7 @@ class Culture24API
     {
         $result = array();
         foreach ($this->_records as $k => $v) {
-            $result[$v->uniqueID] = new Culture24Venue($v);
+            $result[$v->uniqueID] = new Venue($v);
         }
         return $result;
     }

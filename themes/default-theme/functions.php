@@ -85,7 +85,7 @@ function c24DisplayEvent()
         'query_type' => CULTURE24_API_EVENTS
     );
     // Temporary until we can inject this object
-    $obj = $__c24->getService('Culture24API')->setOptions($options);
+    $obj = $__c24->getService('Culture24Api')->setOptions($options);
     if ($obj->requestID($_GET['c24event'])) {
         $c24objects = $obj->get_objects();
         foreach ($c24objects as $object) {
@@ -112,7 +112,7 @@ function c24DisplayVenue()
     );
 
     // Temporary until we can inject this object
-    $obj = $__c24->getService('Culture24API')->setOptions($options);
+    $obj = $__c24->getService('Culture24Api')->setOptions($options);
     if ($obj->requestID($_GET['c24venue'])) {
         $c24objects = $obj->get_objects();
         foreach ($c24objects as $object) {
@@ -165,7 +165,7 @@ function c24SetupListingObj()
         'sort' => 'date',
     );
     // Temporary until we can inject this object
-    $obj = $__c24->getService('Culture24API')->setOptions($options);
+    $obj = $__c24->getService('Culture24Api')->setOptions($options);
 
     return $obj;
 }

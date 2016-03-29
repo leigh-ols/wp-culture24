@@ -33,7 +33,7 @@ if (isset($_POST['c24'])) {
         'type' => $_POST['type'],
         'sort' => 'date',
     );
-    $obj = $__c24->getService('Culture24API')->setOptions($options);
+    $obj = $__c24->getService('Culture24Api')->setOptions($options);
 
     if ($obj->requestSet()) {
         $c24objects = $obj->get_objects();

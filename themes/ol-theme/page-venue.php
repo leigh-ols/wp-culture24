@@ -30,7 +30,7 @@ $options = array(
     'keyword'  => $_GET['c24venue']
 );
 // Temporary until we can inject this object
-$obj = $__c24->getService('Culture24API')->setOptions($options);
+$obj = $__c24->getService('Culture24Api')->setOptions($options);
 if ($obj->requestSet()) {
     $c24objects = $obj->get_objects();
 } else {

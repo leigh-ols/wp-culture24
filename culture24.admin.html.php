@@ -7,7 +7,7 @@ if (isset($_POST['c24'])) {
         die('Security check');
     }
     // Temporary until we can inject this object
-    $obj = $__c24->getService('Culture24API')->setOptions($options);
+    $obj = $__c24->getService('Culture24Api')->setOptions($options);
     if ($obj->requestID($_POST['uniqueID'])) {
         $c24objects = $obj->get_objects();
     } else {

@@ -1,5 +1,5 @@
 <?php
-namespace c24\Service\API;
+namespace c24\Service\Api\Culture24;
 
 /**
  * @package Culture24
@@ -9,7 +9,7 @@ namespace c24\Service\API;
 /**
  * Class that handles Culture24 venue record
  */
-class Culture24Venue extends Culture24Class
+class Venue extends Record
 {
 
     /**

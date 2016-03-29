@@ -1,5 +1,5 @@
 <?php
-namespace c24\Service\API;
+namespace c24\Service\Api\Culture24;
 
 /**
  * @package Culture24
@@ -9,7 +9,7 @@ namespace c24\Service\API;
 /**
  * Class that handles generic Culture24 record
  */
-class Culture24Class
+abstract class Record
 {
 
     /**
