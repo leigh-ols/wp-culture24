@@ -1,5 +1,5 @@
 <?php
-namespace c24;
+namespace c24\Service\API;
 
 /**
  * @package Culture24
@@ -187,11 +187,30 @@ class Culture24API
         $this->_url = get_option('c24api_url', 'http://www.culture24.org.uk/api/rest/v');
         $this->_key = get_option('c24api_key', '');
         $this->_api_version = get_option('c24api_version', '1');
+
+        if (!empty($options)) {
+            $this->setOptions($options);
+        }
+    }
+
+    /**
+     * setOptions
+     * Implemented to allow object re-use
+     *
+     * @param mixed[] $options
+     *
+     * @return self
+     * @access public
+     */
+    public function setOptions($options)
+    {
         $this->set_elements($options['elements']);
         unset($options['elements']);
         foreach ($options as $key => $val) {
             $this->{'_' . $key} = trim($val);
         }
+
+        return $this;
     }
 
     /**

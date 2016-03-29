@@ -14,7 +14,7 @@
 
 namespace c24;
 
-// Uses
+use c24\Service\API\Culture24API;
 
 /**
  * Class WPCulture24
@@ -36,6 +36,13 @@ class WPCulture24
     private $config;
 
     /**
+     * services
+     *
+     * @var object[]
+     */
+    private $services;
+
+    /**
      * __construct
      *
      * @return void
@@ -49,7 +56,10 @@ class WPCulture24
         add_action('admin_head', array($this, 'wpHead'));
 
         // Init plugin after all other plugins
-        add_action('init', array($this, 'init'), 11);
+        //add_action('init', array($this, 'init'), 11);
+
+        // For now init immediately
+        $this->init();
     }
 
     /**
@@ -96,7 +106,9 @@ class WPCulture24
         $_REQUEST = stripslashes_deep($_REQUEST);
 
         // Create objects
-       // $config = new \WordPressSettingsFramework
+        // $config = new \WordPressSettingsFramework
+
+        $this->services['Culture24API'] = new Culture24API();
 
         // Hookable action
         do_action('wpculture24_init');
@@ -130,5 +142,23 @@ class WPCulture24
     public function getConfig()
     {
         return $this->config;
+    }
+
+    /**
+     * getService
+     * Allows retrieval of a service outside of plugin
+     *
+     * @param string $service
+     *
+     * @return mixed
+     * @access public
+     */
+    public function getService($service)
+    {
+        if (isset($this->services[$service])) {
+            return $this->services[$service];
+        }
+
+        return false;
     }
 }

@@ -326,7 +326,7 @@ function c24DisplaySliderFoundation($obj)
 
 function c24DisplayEvent($eventID='')
 {
-    global $c24event;
+    global $__c24,$c24event;
     $template = 'page-event.php';
     if (is_front_page()) {
         $template = 'page-front.php';
@@ -334,7 +334,8 @@ function c24DisplayEvent($eventID='')
     if (!$eventID) {
         $eventID = $_GET['c24event'];
     }
-    $obj = new Culture24API();
+    // Temporary until we can inject this object
+    $obj = $__c24->getService('Culture24API')->setOptions($options);
     if ($obj->requestID($eventID)) {
         $c24objects = $obj->get_objects();
         foreach ($c24objects as $object) {
@@ -349,12 +350,13 @@ function c24DisplayEvent($eventID='')
 
 function c24DisplayVenue()
 {
-    global $c24venue;
+    global $__c24,$c24venue;
 
     $options = array(
         'query_type' => CULTURE24_API_VENUES
     );
-    $obj = new Culture24API($options);
+    // Temporary until we can inject this object
+    $obj = $__c24->getService('Culture24API')->setOptions($options);
     if ($obj->requestID($_GET['c24venue'])) {
         $c24objects = $obj->get_objects();
         foreach ($c24objects as $object) {
@@ -370,6 +372,7 @@ function c24DisplayVenue()
 
 function c24SetupListingObj($limit=999)
 {
+    global $__c24;
     global $paged;
     global $c24event;
     global $c24perpage;
@@ -406,7 +409,8 @@ function c24SetupListingObj($limit=999)
         'type' => @$_GET['type'],
         'sort' => 'date',
     );
-    $obj = new Culture24API($options);
+    // Temporary until we can inject this object
+    $obj = $__c24->getService('Culture24API')->setOptions($options);
 
     return $obj;
 }

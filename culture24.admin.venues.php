@@ -1,5 +1,5 @@
 <?php
-global $c24objects, $c24pager, $c24error, $c24debug;
+global $__c24,$c24objects, $c24pager, $c24error, $c24debug;
 
 $c24objects = array();
 $c24pager = '';
@@ -26,7 +26,8 @@ if (isset($_POST['c24'])) {
         'region' => $_POST['region'],
         'sort' => 'name',
     );
-    $obj = new Culture24API($options);
+    // Temporary until we can inject this object
+    $obj = $__c24->getService('Culture24API')->setOptions($options);
 
     if ($obj->requestSet()) {
         $c24objects = $obj->get_objects();

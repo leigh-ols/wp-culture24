@@ -1,5 +1,7 @@
 <?php
-global $c24objects, $c24pager, $c24error, $c24debug;
+namespace c24;
+
+global $__c24, $c24objects, $c24pager, $c24error, $c24debug;
 
 $c24objects = array();
 $c24pager = '';
@@ -31,7 +33,7 @@ if (isset($_POST['c24'])) {
         'type' => $_POST['type'],
         'sort' => 'date',
     );
-    $obj = new Culture24API($options);
+    $obj = $__c24->getService('Culture24API')->setOptions($options);
 
     if ($obj->requestSet()) {
         $c24objects = $obj->get_objects();

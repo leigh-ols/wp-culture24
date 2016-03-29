@@ -103,11 +103,12 @@ function c24pager($total_items, $per_page = 10)
  */
 function c24DisplayEvent()
 {
-    global $c24event;
+    global $__c24, $c24event;
     $options = array(
         'query_type' => CULTURE24_API_EVENTS
     );
-    $obj = new Culture24API($options);
+    // Temporary until we can inject this object
+    $obj = $__c24->getService('Culture24API')->setOptions($options);
     if ($obj->requestID($_GET['c24event'])) {
         $c24objects = $obj->get_objects();
         foreach ($c24objects as $object) {
@@ -127,13 +128,14 @@ function c24DisplayEvent()
  */
 function c24DisplayVenue()
 {
-    global $c24venue;
+    global $__c24,$c24venue;
 
     $options = array(
         'query_type' => CULTURE24_API_VENUES
     );
 
-    $obj = new Culture24API($options);
+    // Temporary until we can inject this object
+    $obj = $__c24->getService('Culture24API')->setOptions($options);
     if ($obj->requestID($_GET['c24venue'])) {
         $c24objects = $obj->get_objects();
         foreach ($c24objects as $object) {
@@ -155,8 +157,7 @@ function c24DisplayVenue()
  */
 function c24SetupListingObj()
 {
-    global $paged;
-    global $c24admin;
+    global $__c24,$paged,$c24admin;
 
     $limit = $c24admin->get_option('epp');
     $offset = 0;
@@ -186,7 +187,8 @@ function c24SetupListingObj()
         'type' => @$_GET['type'],
         'sort' => 'date',
     );
-    $obj = new Culture24API($options);
+    // Temporary until we can inject this object
+    $obj = $__c24->getService('Culture24API')->setOptions($options);
 
     return $obj;
 }

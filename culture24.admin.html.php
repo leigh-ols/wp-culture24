@@ -1,12 +1,13 @@
 <?php
-global $c24objects, $c24pager, $c24error;
+global $__c24,$c24objects, $c24pager, $c24error;
 $c24objects = array();
 $c24error = false;
 if (isset($_POST['c24'])) {
     if (!wp_verify_nonce($_POST['c24'], 'c24-test')) {
         die('Security check');
     }
-    $obj = new Culture24API();
+    // Temporary until we can inject this object
+    $obj = $__c24->getService('Culture24API')->setOptions($options);
     if ($obj->requestID($_POST['uniqueID'])) {
         $c24objects = $obj->get_objects();
     } else {

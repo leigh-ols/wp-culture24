@@ -1,5 +1,5 @@
 <?php
-namespace c24;
+namespace c24\Service\API;
 
 /**
  * @package Culture24

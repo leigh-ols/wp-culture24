@@ -13,7 +13,7 @@
  */
 
 
-global $c24venue;
+global $__c24,$c24venue;
 $c24img = $c24venue->get_image_url();
 $c24title = $c24venue->get_name();
 $c24description = $c24venue->get_description();
@@ -29,7 +29,8 @@ $options = array(
     'keyfield' => 'venueID',
     'keyword'  => $_GET['c24venue']
 );
-$obj = new Culture24API($options);
+// Temporary until we can inject this object
+$obj = $__c24->getService('Culture24API')->setOptions($options);
 if ($obj->requestSet()) {
     $c24objects = $obj->get_objects();
 } else {
