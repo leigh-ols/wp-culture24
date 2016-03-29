@@ -1,5 +1,7 @@
 <?php
 
+namespace c24;
+
 define('C24_SLUG', '/events');
 
 // Remove page title 'events' from single event listing.
@@ -13,7 +15,7 @@ function c24RemoveTitleFromSingleEvent($title)
     }
     return $title;
 }
-add_filter('the_title', 'c24RemoveTitleFromSingleEvent');
+add_filter('the_title', 'c24\c24RemoveTitleFromSingleEvent');
 
 function c24enqueue()
 {
@@ -21,7 +23,7 @@ function c24enqueue()
     wp_enqueue_script('jquery-ui-datepicker');
     wp_enqueue_script('c24');
 }
-add_action('wp_enqueue_scripts', 'c24enqueue');
+add_action('wp_enqueue_scripts', 'c24\c24enqueue');
 
 function c24Page()
 {
@@ -43,7 +45,7 @@ function c24Page()
     c24DisplayListing($obj);
     return ob_get_clean();
 }
-add_shortcode('c24page', 'c24Page');
+add_shortcode('c24page', 'c24\c24Page');
 
 function c24HomePage()
 {
@@ -52,7 +54,7 @@ function c24HomePage()
     c24DisplayEvent($event);
     return ob_get_clean();
 }
-add_shortcode('c24homepage', 'c24HomePage');
+add_shortcode('c24homepage', 'c24\c24HomePage');
 
 // This function requires ol-wp-theme
 function c24Slider($args=array())
@@ -64,7 +66,7 @@ function c24Slider($args=array())
     $obj = c24SetupListingObj(6);
     return c24DisplaySlider($obj);
 }
-add_shortcode('c24slider', 'c24Slider');
+add_shortcode('c24slider', 'c24\c24Slider');
 
 function c24FeedHook()
 {
@@ -85,7 +87,7 @@ function c24FeedHook()
         do_action('c24obj', $c24obj);
     }
 }
-add_filter('init', 'c24FeedHook', 99);
+add_filter('init', 'c24\c24FeedHook', 99);
 
 /**
  * Compile a WP pagination string that can be printed in a template
@@ -325,9 +327,9 @@ function c24DisplaySliderFoundation($obj)
 function c24DisplayEvent($eventID='')
 {
     global $c24event;
-    $template = 'ol-theme/page-event.php';
+    $template = 'page-event.php';
     if (is_front_page()) {
-        $template = 'ol-theme/page-front.php';
+        $template = 'page-front.php';
     }
     if (!$eventID) {
         $eventID = $_GET['c24event'];
@@ -357,7 +359,7 @@ function c24DisplayVenue()
         $c24objects = $obj->get_objects();
         foreach ($c24objects as $object) {
             $c24venue = $object;
-            include 'ol-theme/page-venue.php';
+            include 'page-venue.php';
         }
     } else {
         $c24error = $obj->get_message();
@@ -443,7 +445,7 @@ function c24DisplayListing($obj)
     <div class="c24">
 
 <?php
-    include 'ol-theme/content-event-form.php';
+    include 'content-event-form.php';
     c24printevents($c24objects);
 
     //@TODO get real max number of results
@@ -463,7 +465,7 @@ function c24printevents($events)
     echo '<div id="c24events" class="c24events-list row">';
     foreach ($events as $object) {
         $c24event = $object;
-        include 'ol-theme/content-event.php';
+        include 'content-event.php';
     }
     echo '</div>';
 }

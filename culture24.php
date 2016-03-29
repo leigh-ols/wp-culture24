@@ -1,29 +1,15 @@
 <?php
-/*
- * Plugin Name: Culture24
- * Plugin URI: http://github.com/zenlan
- * Version: 1.0.2
- * Description: Connect to the Culture24 API
- * Author: Monique Szpak for the Imperial War Museums
- * Author URI: http://zenlan.com
- * License: MIT
- */
+namespace c24;
 
-define('CULTURE24__MINIMUM_WP_VERSION', '3.3');
-define('CULTURE24__VERSION', '0.1.0');
-
-// @TODO This is app entry point,... implement psr4 autoloader, create WPCulture24 object
-// These includes will be handled by autoloader, they can be instantiated within WPCulture24 obj
 $pwd = dirname(__FILE__);
-require_once $pwd . '/culture24.api.php';
-require_once $pwd . '/culture24.class.php';
-require_once $pwd . '/culture24.event.php';
-require_once $pwd . '/culture24.venue.php';
+//require_once $pwd . '/culture24.api.php';
+//require_once $pwd . '/culture24.class.php';
+//require_once $pwd . '/culture24.event.php';
+//require_once $pwd . '/culture24.venue.php';
 
 // LB
-require_once $pwd . '/ol-functions.php';
+//require_once $pwd . '/ol-functions.php';
 
-// @TODO Move everything below this line elsewhere
 /**
  *
  */

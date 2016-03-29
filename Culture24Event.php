@@ -1,4 +1,5 @@
 <?php
+namespace c24;
 
 /**
  * @package Culture24

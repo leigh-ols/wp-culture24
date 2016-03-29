@@ -1,0 +1,38 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "227dcced1a632c0f35146be9cf1fcc4e",
+    "content-hash": "c11037426570eece3b3a3878c79f7278",
+    "packages": [
+        {
+            "name": "jamesckemp/WordPress-Settings-Framework",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jamesckemp/WordPress-Settings-Framework",
+                "reference": "7abcb9a822293d840c508b1ab4a27acb51919412"
+            },
+            "type": "library",
+            "authors": [
+                {
+                    "name": "James Kemp",
+                    "email": "me@jckemp.com"
+                }
+            ],
+            "time": "2016-03-22 10:33:13"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "jamesckemp/wordpress-settings-framework": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

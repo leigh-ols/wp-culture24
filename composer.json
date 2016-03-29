@@ -1,0 +1,21 @@
+{
+    "name": "iwmdigital/wp-culture24",
+    "authors": [
+        {
+            "name": "Leigh",
+            "email": "leigh@orangeleaf.com"
+        }
+    ],
+    "repositories": [
+        {
+            "url": "https://github.com/jamesckemp/WordPress-Settings-Framework",
+            "type": "git"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"c24\\": "./"}
+    },
+    "require": {
+        "jamesckemp/WordPress-Settings-Framework": "dev-master"
+    }
+}

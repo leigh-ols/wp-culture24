@@ -1,16 +1,10 @@
 <?php
+namespace c24;
 
 /**
  * @package Culture24
  *
  */
-defined('CULTURE24_API_DEBUG') or define('CULTURE24_API_DEBUG', false);
-defined('CULTURE24_API_EVENTS') or define('CULTURE24_API_EVENTS', 'events');
-defined('CULTURE24_API_VENUES') or define('CULTURE24_API_VENUES', 'venues');
-defined('CULTURE24_API_MAX_TRIES') or define('CULTURE24_API_MAX_TRIES', 3);
-define('CULTURE24_API_DATE_FORMAT_INPUT', 'd-m-Y');
-define('CULTURE24_API_DATE_FORMAT_OUTPUT', 'd/m/Y');
-define('CULTURE24_API_DATE_END_DEFAULT', date(CULTURE24_API_DATE_FORMAT_INPUT, time() + (7 * (24 * 3600))));
 
 /**
  * Class that handles Culture24 requests and responses
