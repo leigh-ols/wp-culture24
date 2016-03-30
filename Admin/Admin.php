@@ -1,0 +1,234 @@
+<?php
+/**
+ * Admin.php
+ *
+ * PHP Version 5.4
+ *
+ * @category
+ * @package
+ * @subpackage
+ * @author     Leigh Bicknell <leigh@orangeleaf.com>
+ * @license    Copyright Orangeleaf Systems Ltd 2013
+ * @link       http://orangeleaf.com
+ */
+
+namespace c24\Admin;
+
+/**
+ * Class Admin
+ *
+ * @category
+ * @package
+ * @subpackage
+ * @author     Leigh Bicknell <leigh@orangeleaf.com>
+ * @license    Copyright Orangeleaf Systems Ltd 2013
+ * @link       http://orangeleaf.com
+ */
+class Admin {
+    public $settings = array('theme', 'url', 'version', 'key', 'tag', 'epp', 'vfp', 'vpp');
+    public $settings_prefix = 'c24api_';
+
+    public function __construct() {
+        if (is_admin()) {
+            add_action('admin_menu', array($this, 'admin_menu'));
+            add_action('admin_init', array($this, 'admin_init'));
+        }
+    }
+
+    public function admin_menu() {
+        add_menu_page('Culture24 Options', 'Culture24', 'manage_options', 'culture24', array($this, 'admin_options'));
+        add_submenu_page('culture24', 'Events', 'Events', 'manage_options', 'events', array($this, 'admin_events'));
+        add_submenu_page('culture24', 'Venues', 'Venues', 'manage_options', 'venues', array($this, 'admin_venues'));
+        add_submenu_page('culture24', 'HTML', 'HTML', 'manage_options', 'html', array($this, 'admin_html'));
+        add_submenu_page('culture24', 'Dates', 'Dates', 'manage_options', 'dates', array($this, 'admin_dates'));
+    }
+
+    public function admin_options() {
+        $this->include_file('culture24.admin.php');
+    }
+
+    public function admin_dates() {
+        $this->include_file('culture24.admin.dates.php');
+    }
+
+    public function admin_html() {
+        $this->include_file('culture24.admin.html.php');
+    }
+
+    public function admin_events() {
+        $this->include_file('culture24.admin.events.php');
+    }
+
+    public function admin_venues() {
+        $this->include_file('culture24.admin.venues.php');
+    }
+
+    public function admin_init() {
+        register_setting('c24_options_group_api', 'c24', array($this, 'c24_save_settings'));
+        add_settings_section(
+            'settings_api', 'API Settings', array($this, 'print_section_info'), 'c24-settings-api'
+        );
+        add_settings_field(
+            'c24_api_theme', 'Theme', array($this, 'create_field_api_theme'), 'c24-settings-api', 'settings_api'
+        );
+        add_settings_field(
+            'c24_api_url', 'Base URL', array($this, 'create_field_api_url'), 'c24-settings-api', 'settings_api'
+        );
+        add_settings_field(
+            'c24_api_version', 'Version', array($this, 'create_field_api_version'), 'c24-settings-api', 'settings_api'
+        );
+        add_settings_field(
+            'c24_api_key', 'Key', array($this, 'create_field_api_key'), 'c24-settings-api', 'settings_api'
+        );
+        add_settings_field(
+            'c24_api_tag', 'Default search tag(s)', array($this, 'create_field_api_tag'), 'c24-settings-api', 'settings_api'
+        );
+        add_settings_field(
+            'c24_api_epp', 'Events per page', array($this, 'create_field_api_epp'), 'c24-settings-api', 'settings_api'
+        );
+        add_settings_field(
+            'c24_api_efp', 'Events front page', array($this, 'create_field_api_efp'), 'c24-settings-api', 'settings_api'
+        );
+        add_settings_field(
+            'c24_api_vpp', 'Partners per page', array($this, 'create_field_api_vpp'), 'c24-settings-api', 'settings_api'
+        );
+        add_settings_field(
+            'c24_api_venue_id', 'Venue ID', array($this, 'create_field_api_venue_id'), 'c24-settings-api', 'settings_api'
+        );
+        add_settings_field(
+            'c24_api_epp', 'Events per page', array($this, 'create_field_api_epp'), 'c24-settings-api', 'settings_api'
+        );
+        add_settings_field(
+            'c24_api_efp', 'Event ID front page', array($this, 'create_field_api_efp'), 'c24-settings-api', 'settings_api'
+        );
+        add_settings_field(
+            'c24_api_vpp', 'Partners per page', array($this, 'create_field_api_vpp'), 'c24-settings-api', 'settings_api'
+        );
+    }
+
+    /**
+     * Create the theme selector field
+     *
+     * @return void
+     */
+    public function create_field_api_theme() {
+        $current = get_option('c24api_theme', 'default-theme');
+        $themes = glob(CULTURE24__CONNECTOR_PATH . '/themes/*', GLOB_ONLYDIR);
+?>
+    <select name="c24[theme]">
+        <?php foreach ($themes as $theme) : ?>
+            <?php $theme = basename($theme); ?>
+            <option value="<?php echo $theme; ?>" <?php echo ($theme == $current ? 'selected="selected"' : ''); ?>><?php echo $theme; ?></option>
+        <?php endforeach; ?>
+    </select>
+<?php
+    }
+
+    public function create_field_api_url() {
+?>
+    <input type="text" id="input_c24api_url" name="c24[url]" value="<?php echo get_option('c24api_url', 'http://www.culture24.org.uk/api/rest/v'); ?>" size="128" />
+<?php
+    }
+
+    public function create_field_api_version() {
+?>
+    <input type="text" id="input_c24api_version" name="c24[version]" value="<?php echo get_option('c24api_version', '1'); ?>" size="2" />
+<?php
+    }
+
+    public function create_field_api_key() {
+?>
+    <input type="text" id="input_c24api_key" name="c24[key]" value="<?php echo get_option('c24api_key', ''); ?>" size="32" />
+<?php
+    }
+
+    public function create_field_api_tag() {
+?>
+    <input type="text" id="input_c24api_tag" name="c24[tag]" value="<?php echo get_option('c24api_tag', ''); ?>" size="128" />
+<?php
+    }
+
+    public function create_field_api_venue_id() {
+?>
+    <input type="text" id="input_c24api_venue_id" name="c24[venue_id]" value="<?php echo get_option('c24api_venue_id', ''); ?>" size="128" />
+<?php
+    }
+
+    public function create_field_api_epp() {
+?>
+    <input type="text" id="input_c24api_epp" name="c24[epp]" value="<?php echo get_option('c24api_epp', '10'); ?>" size="2" />
+<?php
+    }
+
+    public function create_field_api_efp() {
+?>
+    <input type="text" id="input_c24api_efp" name="c24[efp]" value="<?php echo get_option('c24api_efp', ''); ?>" size="8" />
+<?php
+    }
+
+    public function create_field_api_vpp() {
+?>
+    <input type="text" id="input_c24api_vpp" name="c24[vpp]" value="<?php echo get_option('c24api_vpp', '25'); ?>" size="2" />
+<?php
+    }
+
+    public function print_section_info() {
+        print 'Use shortcode [c24page]. Default tag(s) to filter all searchs. Leave blank, enter one word/phrase
+            or comma delimited list of words/phrases.';
+    }
+
+    public function c24_save_settings($input) {
+        $prefix = $this->settings_prefix;
+        foreach ($this->settings as $v) {
+            if (isset($input[$v])) {
+                if (get_option($prefix . $v) === FALSE) {
+                    add_option($prefix . $v, $input[$v]);
+                } else {
+                    update_option($prefix . $v, $input[$v]);
+                }
+            }
+        }
+        if (isset($input['venue_id'])) {
+            if (get_option('c24api_venue_id') === FALSE) {
+                add_option('c24api_venue_id', $input['venue_id']);
+            } else {
+                update_option('c24api_venue_id', $input['venue_id']);
+            }
+        }
+        if (isset($input['epp'])) {
+            if (get_option('c24api_epp') === FALSE) {
+                add_option('c24api_epp', $input['epp']);
+            } else {
+                update_option('c24api_epp', $input['epp']);
+            }
+        }
+        if (isset($input['efp'])) {
+            if (get_option('c24api_efp') === FALSE) {
+                add_option('c24api_efp', $input['efp']);
+            } else {
+                update_option('c24api_efp', $input['efp']);
+            }
+        }
+        if (isset($input['vpp'])) {
+            if (get_option('c24api_vpp') === FALSE) {
+                add_option('c24api_vpp', $input['vpp']);
+            } else {
+                update_option('c24api_vpp', $input['vpp']);
+            }
+        }
+        return $input;
+    }
+
+    public function get_option($option, $default=NULL) {
+        return get_option($this->settings_prefix . $option, $default);
+    }
+
+    public function include_file($filename)
+    {
+        if (file_exists(dirname(__FILE__) . '/' . $filename)) {
+            include( dirname(__FILE__) . '/' . $filename );
+        } else {
+            _e('<p>Failed to find ' . $filename . '</p>', 'culture24');
+        }
+    }
+}

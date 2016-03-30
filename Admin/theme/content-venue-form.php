@@ -1,5 +1,5 @@
     <form id='c24-form' class="form-wrap" action="<?php print $_SERVER['REQUEST_URI']; ?>" method="POST">
-      <?php 
+      <?php
       if (function_exists('wp_nonce_field')) {
           wp_nonce_field('c24-test', 'c24');
       }
@@ -59,7 +59,7 @@
             </select>
           </td>
         </tr>
-      </table
+      </table>
       <br />
       <input class="button-primary" type="submit" name="c24_btn_fetch" id="c24_btn_fetch" value="Fetch" />
       <hr />

@@ -15,6 +15,7 @@
 namespace c24;
 
 use c24\Service\Api\Culture24\Api as Culture24Api;
+use c24\Admin\Admin;
 
 /**
  * Class WPCulture24
@@ -41,6 +42,13 @@ class WPCulture24
      * @var object[]
      */
     private $services;
+
+    /**
+     * admin
+     *
+     * @var c24\Admin\Admin;
+     */
+    private $admin;
 
     /**
      * __construct
@@ -111,6 +119,11 @@ class WPCulture24
         // $config = new \WordPressSettingsFramework
 
         $this->services['Culture24Api'] = new Culture24Api();
+        $this->admin = new Admin();
+
+        // Moved from culture24.php to prevent race hazard
+        // @TODO functions.php should be a class we can instantiate
+        require_once dirname(__FILE__) . '/themes/' . $this->admin->get_option('theme', 'default-theme') . '/functions.php';
 
         // Hookable action
         do_action('wpculture24_init');
@@ -159,6 +172,23 @@ class WPCulture24
     {
         if (isset($this->services[$service])) {
             return $this->services[$service];
+        }
+
+        return false;
+    }
+
+    /**
+     * getAdmin
+     * Allows retrieval of Admin class. Really a temporary function to keep
+     * legacy code functional during plugin refactor.
+     *
+     * @return c24\Admin\Admin
+     * @access public
+     */
+    public function getAdmin()
+    {
+        if (isset($this->admin)) {
+            return $this->admin;
         }
 
         return false;

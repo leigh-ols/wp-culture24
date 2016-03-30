@@ -134,8 +134,9 @@ function c24DisplayVenue()
  */
 function c24SetupListingObj()
 {
-    global $__c24,$paged,$c24admin;
+    global $__c24,$paged;
 
+    $c24admin = $__c24->getAdmin();
     $limit = $c24admin->get_option('epp');
     $offset = 0;
 
@@ -180,7 +181,8 @@ function c24SetupListingObj()
 function c24DisplayListing($obj)
 {
     global $pages;
-    global $c24admin;
+    global $__c24;
+    $c24admin = $__c24->getAdmin();
 
     $c24perpage = $c24admin->get_option('epp');
     $c24objects = array();

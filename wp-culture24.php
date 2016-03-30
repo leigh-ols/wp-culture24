@@ -35,3 +35,4 @@ require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/culture24.php';
 
 $__c24 = new WPCulture24();
+
