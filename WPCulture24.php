@@ -121,9 +121,12 @@ class WPCulture24
         $this->services['Culture24Api'] = new Culture24Api();
         $this->admin = new Admin();
 
+        $theme_namespace = $this->admin->getTheme();
+        $this->theme = new $theme_namespace($this->admin, $this->getService('Culture24Api'));
+
         // Moved from culture24.php to prevent race hazard
         // @TODO functions.php should be a class we can instantiate
-        require_once dirname(__FILE__) . '/themes/' . $this->admin->get_option('theme', 'default-theme') . '/functions.php';
+        //require_once dirname(__FILE__) . '/themes/' . $this->admin->get_option('theme', 'default-theme') . '/functions.php';
 
         // Hookable action
         do_action('wpculture24_init');

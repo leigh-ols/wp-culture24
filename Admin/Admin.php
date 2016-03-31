@@ -25,6 +25,8 @@ namespace c24\Admin;
  * @link       http://orangeleaf.com
  */
 class Admin {
+    protected $fallback_theme = '\c24\Themes\DefaultTheme\DefaultTheme';
+
     public $settings = array('theme', 'url', 'version', 'key', 'tag', 'epp', 'vfp', 'vpp');
     public $settings_prefix = 'c24api_';
 
@@ -44,23 +46,23 @@ class Admin {
     }
 
     public function admin_options() {
-        $this->include_file('culture24.admin.php');
+        include('culture24.admin.php');
     }
 
     public function admin_dates() {
-        $this->include_file('culture24.admin.dates.php');
+        include('culture24.admin.dates.php');
     }
 
     public function admin_html() {
-        $this->include_file('culture24.admin.html.php');
+        include('culture24.admin.html.php');
     }
 
     public function admin_events() {
-        $this->include_file('culture24.admin.events.php');
+        include('culture24.admin.events.php');
     }
 
     public function admin_venues() {
-        $this->include_file('culture24.admin.venues.php');
+        include('culture24.admin.venues.php');
     }
 
     public function admin_init() {
@@ -112,13 +114,19 @@ class Admin {
      * @return void
      */
     public function create_field_api_theme() {
-        $current = get_option('c24api_theme', 'default-theme');
-        $themes = glob(CULTURE24__CONNECTOR_PATH . '/themes/*', GLOB_ONLYDIR);
+        $current_namespace = get_option('c24api_theme', $this->fallback_theme);
+        $theme_paths = glob(CULTURE24__CONNECTOR_PATH . '/Themes/*', GLOB_ONLYDIR);
+
+        $themes = array();
+        foreach ($theme_paths as $theme) {
+            $theme = basename($theme);
+            $themes[$theme] = '\\c24\\Themes\\'.$theme.'\\'.$theme;
+        }
 ?>
     <select name="c24[theme]">
-        <?php foreach ($themes as $theme) : ?>
-            <?php $theme = basename($theme); ?>
-            <option value="<?php echo $theme; ?>" <?php echo ($theme == $current ? 'selected="selected"' : ''); ?>><?php echo $theme; ?></option>
+        <?php foreach ($themes as $theme_name => $theme_namespace) : ?>
+            <?php //$theme = basename($theme); ?>
+            <option value="<?php echo $theme_namespace; ?>" <?php echo ($theme_namespace == $current_namespace ? 'selected="selected"' : ''); ?>><?php echo $theme_name; ?></option>
         <?php endforeach; ?>
     </select>
 <?php
@@ -223,12 +231,13 @@ class Admin {
         return get_option($this->settings_prefix . $option, $default);
     }
 
-    public function include_file($filename)
+    public function getTheme()
     {
-        if (file_exists(dirname(__FILE__) . '/' . $filename)) {
-            include( dirname(__FILE__) . '/' . $filename );
-        } else {
-            _e('<p>Failed to find ' . $filename . '</p>', 'culture24');
+        $theme_namespace = $this->get_option('theme', $this->fallback_theme);
+        if (!class_exists($theme_namespace)) {
+            $theme_namespace = $this->fallback_theme;
+            update_option($this->settings_prefix . 'theme', $theme_namespace);
         }
+        return $theme_namespace;
     }
 }
