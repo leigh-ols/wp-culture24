@@ -42,7 +42,7 @@ abstract class AbstractTheme implements ThemeInterface
      * api
      * Use getApi()
      *
-     * @var mixed
+     * @var Api
      */
     private $api;
 
@@ -62,9 +62,9 @@ abstract class AbstractTheme implements ThemeInterface
         $theme_reflection = new \ReflectionClass($this);
         $this->theme_path = dirname($theme_reflection->getFileName());
 
-        add_shortcode('c24page', array($this, 'c24Page'));
+        add_shortcode('c24page', array($this, 'shortcode'));
         // @NOTE Race hazard.... WPCulture24 class fires on init...
-        add_filter('init', array($this, 'c24FeedHook'));
+        add_filter('init', array($this, 'feedHook'));
     }
 
     /**
@@ -129,91 +129,51 @@ abstract class AbstractTheme implements ThemeInterface
         return $this;
     }
 
-    // @TODO refactor below here
-
     /**
      * Display a page
      *
+     * @TODO At the moment we're using _GET params and a shortcode to display the
+     * pages... This is uuuugly. After primary refactor of code, consider using
+     * Page class from dams-connector, allowing for url rewrites etc
+     * @TODO If this is a shortcode it should return a string... not echo out
+     *
      * @return void
      */
-    public function c24Page()
+    public function shortcode($atts, $content = '')
     {
         if (isset($_GET['c24event'])) {
-            $this->c24DisplayEvent();
+            $this->displayEvent();
             return;
         }
 
         if (isset($_GET['c24venue'])) {
-            c24DisplayVenue();
+            $this->displayVenue();
             return;
         }
 
-        $obj = $this->c24SetupListingObj();
-        $this->c24DisplayListing($obj);
+        $this->displayListing();
         return;
     }
+    // @TODO refactor below here
+
 
     /**
-     * Output a feed
+     * displayEvent
+     *
+     * @TODO remove global $c24event, this is being used by the templates...
+     * When we have proper pages instead of shortcode, we can just pass this as
+     * a param to page constructor
      *
      * @return void
      */
-    public function c24FeedHook()
-    {
-        if (isset($_GET['c24rawfeed'])) {
-            $obj = $this->c24SetupListingObj();
-            c24DisplayFeed($obj);
-            die();
-        }
-    }
-
-    /**
-     * Compile a WP pagination string that can be printed in a template
-     *
-     * Example usage:
-     * global $c24pager
-     * $c24pager = c24_pager($c24obj->get_found(), $_POST['limit']);
-     *
-     * @param type $total_items
-     * @param type $per_page
-     * @return string
-     */
-    public function c24pager($total_items, $per_page = 10)
-    {
-        $max = ceil($total_items / $per_page);
-        $pages = '';
-
-        if (!$current = get_query_var('paged')) {
-            $current = 1;
-        }
-
-        $a['base'] = str_replace(999999999, '%#%', get_pagenum_link(999999999));
-        $a['total'] = $max;
-        $a['current'] = $current;
-        $a['mid_size'] = 6;
-        $total = 1; // 1 show the text "Page N of N", 0 - do not display
-        $result = '';
-
-        if ($total == 1 && $max > 1) {
-            $pages .= ' Page' . $current . ' of ' . $max . '  ' . "<br/>\n";
-        }
-
-        $result .= $pages . paginate_links($a);
-        return $result;
-    }
-
-    /**
-     * c24DisplayEvent
-     *
-     * @return void
-     */
-    public function c24DisplayEvent()
+    public function displayEvent()
     {
         global $c24event;
         $options = array(
             'query_type' => CULTURE24_API_EVENTS
         );
-        // Temporary until we can inject this object
+
+        /** @var $obj Api */
         $obj = $this->getApi()->setOptions($options);
         if ($obj->requestID($_GET['c24event'])) {
             $c24objects = $obj->get_objects();
@@ -228,11 +188,13 @@ abstract class AbstractTheme implements ThemeInterface
     }
 
     /**
-     * c24DisplayVenue
+     * displayVenue
+     *
+     * @TODO Remove c24venue (See displayEvent docblock for details)
      *
      * @return void
      */
-    public function c24DisplayVenue()
+    public function displayVenue()
     {
         global $c24venue;
 
@@ -240,8 +202,8 @@ abstract class AbstractTheme implements ThemeInterface
             'query_type' => CULTURE24_API_VENUES
         );
 
-        // Temporary until we can inject this object
-        $obj = $this->getApi()->getOptions($options);
+        /** @var $obj Api */
+        $obj = $this->getApi()->setOptions($options);
         if ($obj->requestID($_GET['c24venue'])) {
             $c24objects = $obj->get_objects();
             foreach ($c24objects as $object) {
@@ -256,12 +218,72 @@ abstract class AbstractTheme implements ThemeInterface
     }
 
     /**
-     * Enter description here...
+     * displayListing
      *
-     * @return unknown
+     * @TODO remove global $pages, refactor global calls
+     * c24_regions/audiences/types etc
+     *
+     * @return void
+     */
+    public function displayListing()
+    {
+        global $pages;
+
+        $obj = $this->setupListingApi();
+        $c24perpage = $this->getAdmin()->get_option('epp');
+        $c24objects = array();
+        $c24error = $c24debug = false;
+        $date_start = $date_end = '';
+        $c24regions = c24_regions();
+        $c24audiences = c24_audiences();
+        $c24types = c24_types();
+
+        if ($obj->requestSet()) {
+            $c24pages = (int)floor(($obj->get_found() / $c24perpage) + 1);
+
+            $c24objects = $obj->get_objects();
+
+            if ($date_range = $obj->get_dates()) {
+                $date_start = str_replace('/', '-', substr($date_range, 0, strpos($date_range, ',')));
+                $date_end = str_replace('/', '-', substr($date_range, strpos($date_range, ',') + 1));
+            }
+        } else {
+            $c24error = $obj->get_message();
+        }
+?>
+    <div class="c24">
+
+<?php $this->includeThemeFile('content-event-form.php');
+?>
+<?php $this->displayEvents($c24objects);
+?>
+
+        <?php //@TODO get real max number of results ?>
+        <div class="pagination">
+<?php echo $this->pager($obj->get_found(), $c24perpage);
+?>
+<?php $pages = $obj->get_found() / $c24perpage;
+?>
+        </div>
+        <div class="c24__logoc">
+            <img class="c24__logo" alt="Culture 24" src="/wp-content/plugins/wp-culture24/themes/default-theme/culture24-logo.png">
+            <p class="c24__logotext">Culture24 is the cultural data provider for the First World War Centenary Programme events calendar.</p>
+        </div>
+    </div>
+<?php
+
+    }
+
+    /**
+     * setupListingApi
+     * Set up our Api object's options for a listing based on our plugin options
+     * and our search form's $_POST values
+     *
+     *
+     * @return Api
      * @modified   James G 2/5/2014 swapped tagexact and tagtext to force just East Sussex
      */
-    public function c24SetupListingObj()
+    protected function setupListingApi()
     {
         $limit = $this->getAdmin()->get_option('epp');
         $offset = 0;
@@ -291,77 +313,21 @@ abstract class AbstractTheme implements ThemeInterface
             'type' => @$_GET['type'],
             'sort' => 'date',
         );
-        // Temporary until we can inject this object
+
+        /** @var $obj Api */
         $obj = $this->getApi()->setOptions($options);
 
         return $obj;
     }
 
     /**
-     * c24DisplayListing
+     * displayEvents
      *
-     * @param Culture24Api $obj Pre-setup Culture24Api object (using c24SetupObject)
-     *
-     * @return void
-     */
-    public function c24DisplayListing($obj)
-    {
-        global $pages;
-        $c24perpage = $this->getAdmin()->get_option('epp');
-        $c24objects = array();
-        $c24error = $c24debug = false;
-        $date_start = $date_end = '';
-        $c24regions = c24_regions();
-        $c24audiences = c24_audiences();
-        $c24types = c24_types();
-
-        if ($obj->requestSet()) {
-            $c24pages = (int)floor(($obj->get_found() / $c24perpage) + 1);
-
-            $c24objects = $obj->get_objects();
-
-            if ($date_range = $obj->get_dates()) {
-                $date_start = str_replace('/', '-', substr($date_range, 0, strpos($date_range, ',')));
-                $date_end = str_replace('/', '-', substr($date_range, strpos($date_range, ',') + 1));
-            }
-        } else {
-            $c24error = $obj->get_message();
-        }
-        // jquery-ui style is included in our own theme css, uncomment if required
-        //wp_enqueue_script('jquery-ui-datepicker');
-        //wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
-?>
-    <div class="c24">
-
-<?php $this->includeThemeFile('content-event-form.php');
-?>
-<?php $this->c24printevents($c24objects);
-?>
-
-        <?php //@TODO get real max number of results ?>
-        <div class="pagination">
-<?php echo c24pager($obj->get_found(), $c24perpage);
-?>
-<?php $pages = $obj->get_found() / $c24perpage;
-?>
-        </div>
-        <div class="c24__logoc">
-            <img class="c24__logo" alt="Culture 24" src="/wp-content/plugins/wp-culture24/themes/default-theme/culture24-logo.png">
-            <p class="c24__logotext">Culture24 is the cultural data provider for the First World War Centenary Programme events calendar.</p>
-        </div>
-    </div>
-<?php
-
-    }
-
-    /**
-     * c24printevents
-     *
-     * @param mixed $events
+     * @param array $events
      *
      * @return void
      */
-    public function c24printevents($events)
+    public function displayEvents($events)
     {
         global $c24event;
         echo '<div class="c24events-list">';
@@ -373,19 +339,72 @@ abstract class AbstractTheme implements ThemeInterface
     }
 
     /**
-     * c24DisplayFeed
-     *
-     * @param mixed $obj
+     * displayFeed
+     * Should be called from feedHook
      *
      * @return void
      */
-    public function c24DisplayFeed($obj)
+    public function displayFeed()
     {
+        $obj = $this->setupListingApi();
         if ($obj->requestSet()) {
             echo $obj->get_data_raw();
         } else {
             echo $obj->get_message();
         }
+    }
+
+    /**
+     * Display a feed
+     * The feed needs to be output before any other, we use this to hook and
+     * if the user wants a c24 feed.
+     *
+     * @return void
+     */
+    public function feedHook()
+    {
+        if (isset($_GET['c24rawfeed'])) {
+            $this->displayFeed();
+            die();
+        }
+    }
+
+    /**
+     * Compile a WP pagination string that can be printed in a template
+     *
+     * Example usage:
+     * global $c24pager
+     * $c24pager = c24_pager($c24obj->get_found(), $_POST['limit']);
+     *
+     * @TODO Remove this, If the user doesn't want WordPress' pagination they
+     * should use a plugin
+     *
+     * @param type $total_items
+     * @param type $per_page
+     * @return string
+     */
+    public function pager($total_items, $per_page = 10)
+    {
+        $max = ceil($total_items / $per_page);
+        $pages = '';
+
+        if (!$current = get_query_var('paged')) {
+            $current = 1;
+        }
+
+        $a['base'] = str_replace(999999999, '%#%', get_pagenum_link(999999999));
+        $a['total'] = $max;
+        $a['current'] = $current;
+        $a['mid_size'] = 6;
+        $total = 1; // 1 show the text "Page N of N", 0 - do not display
+        $result = '';
+
+        if ($total == 1 && $max > 1) {
+            $pages .= ' Page' . $current . ' of ' . $max . '  ' . "<br/>\n";
+        }
+
+        $result .= $pages . paginate_links($a);
+        return $result;
     }
 
 }
