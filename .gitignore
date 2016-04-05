@@ -1,3 +1,6 @@
-/ol-theme/
+# Ignore all themes
+/Themes/*/
+# Except the default
+!/Themes/DefaultTheme/
 
 /vendor/
