@@ -125,68 +125,68 @@ class Admin {
             $theme = basename($theme);
             $themes[$theme] = '\\c24\\Themes\\'.$theme.'\\'.$theme;
         }
-?>
-    <select name="c24[theme]">
-        <?php foreach ($themes as $theme_name => $theme_namespace) : ?>
-            <?php //$theme = basename($theme); ?>
-            <option value="<?php echo $theme_namespace; ?>" <?php echo ($theme_namespace == $current_namespace ? 'selected="selected"' : ''); ?>><?php echo $theme_name; ?></option>
-        <?php endforeach; ?>
-    </select>
-<?php
+        ?>
+            <select name="c24[theme]">
+                <?php foreach ($themes as $theme_name => $theme_namespace) : ?>
+                    <?php //$theme = basename($theme); ?>
+                    <option value="<?php echo $theme_namespace; ?>" <?php echo ($theme_namespace == $current_namespace ? 'selected="selected"' : ''); ?>><?php echo $theme_name; ?></option>
+                <?php endforeach; ?>
+            </select>
+        <?php
     }
 
     public function create_field_api_url() {
-?>
-    <input type="text" id="input_c24api_url" name="c24[url]" value="<?php echo get_option('c24api_url', 'http://www.culture24.org.uk/api/rest/v'); ?>" size="128" />
-<?php
+        ?>
+            <input type="text" id="input_c24api_url" name="c24[url]" value="<?php echo get_option('c24api_url', 'http://www.culture24.org.uk/api/rest/v'); ?>" size="128" />
+        <?php
     }
 
     public function create_field_api_version() {
-?>
-    <input type="text" id="input_c24api_version" name="c24[version]" value="<?php echo get_option('c24api_version', '1'); ?>" size="2" />
-<?php
+        ?>
+            <input type="text" id="input_c24api_version" name="c24[version]" value="<?php echo get_option('c24api_version', '1'); ?>" size="2" />
+        <?php
     }
 
     public function create_field_api_key() {
-?>
-    <input type="text" id="input_c24api_key" name="c24[key]" value="<?php echo get_option('c24api_key', ''); ?>" size="32" />
-<?php
+        ?>
+            <input type="text" id="input_c24api_key" name="c24[key]" value="<?php echo get_option('c24api_key', ''); ?>" size="32" />
+        <?php
     }
 
     public function create_field_api_tag_text() {
-?>
-    <input type="text" id="input_c24api_tag_text" name="c24[tag_text]" value="<?php echo get_option('c24api_tag_text', ''); ?>" size="128" />
-<?php
+        ?>
+            <input type="text" id="input_c24api_tag_text" name="c24[tag_text]" value="<?php echo get_option('c24api_tag_text', ''); ?>" size="128" />
+        <?php
     }
 
     public function create_field_api_tag_exact() {
-?>
-    <input type="text" id="input_c24api_tag_exact" name="c24[tag_exact]" value="<?php echo get_option('c24api_tag_exact', ''); ?>" size="128" />
-<?php
+        ?>
+            <input type="text" id="input_c24api_tag_exact" name="c24[tag_exact]" value="<?php echo get_option('c24api_tag_exact', ''); ?>" size="128" />
+        <?php
     }
 
     public function create_field_api_venue_id() {
-?>
-    <input type="text" id="input_c24api_venue_id" name="c24[venue_id]" value="<?php echo get_option('c24api_venue_id', ''); ?>" size="128" />
-<?php
+        ?>
+            <input type="text" id="input_c24api_venue_id" name="c24[venue_id]" value="<?php echo get_option('c24api_venue_id', ''); ?>" size="128" />
+        <?php
     }
 
     public function create_field_api_epp() {
-?>
-    <input type="text" id="input_c24api_epp" name="c24[epp]" value="<?php echo get_option('c24api_epp', '10'); ?>" size="2" />
-<?php
+        ?>
+            <input type="text" id="input_c24api_epp" name="c24[epp]" value="<?php echo get_option('c24api_epp', '10'); ?>" size="2" />
+        <?php
     }
 
     public function create_field_api_efp() {
-?>
-    <input type="text" id="input_c24api_efp" name="c24[efp]" value="<?php echo get_option('c24api_efp', ''); ?>" size="8" />
-<?php
+        ?>
+            <input type="text" id="input_c24api_efp" name="c24[efp]" value="<?php echo get_option('c24api_efp', ''); ?>" size="8" />
+        <?php
     }
 
     public function create_field_api_vpp() {
-?>
-    <input type="text" id="input_c24api_vpp" name="c24[vpp]" value="<?php echo get_option('c24api_vpp', '25'); ?>" size="2" />
-<?php
+        ?>
+            <input type="text" id="input_c24api_vpp" name="c24[vpp]" value="<?php echo get_option('c24api_vpp', '25'); ?>" size="2" />
+        <?php
     }
 
     public function print_section_info() {
