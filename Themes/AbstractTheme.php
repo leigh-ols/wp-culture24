@@ -281,9 +281,8 @@ abstract class AbstractTheme implements ThemeInterface
      * @TODO Remove hard coded tags
      *
      * @return Api
-     * @modified   James G 2/5/2014 swapped tagexact and tagtext to force just East Sussex
      */
-    protected function setupListingApi()
+    protected function setupListingApi($options = array())
     {
         $limit = $this->getAdmin()->get_option('epp');
         $tag_exact = $this->getAdmin()->get_option('tag_exact');
@@ -298,10 +297,8 @@ abstract class AbstractTheme implements ThemeInterface
             $offset = ($paged - 1) * $limit;
         }
 
-        $options = array(
+        $options_settings = array(
             'query_type' => CULTURE24_API_EVENTS,
-            'date_start' => $_GET['date-start'],
-            'date_end'   => $_GET['date-end'],
             'limit'      => $limit,
             'offset'     => (int)$offset,
             //'tag'      => 'mytag',
@@ -310,11 +307,18 @@ abstract class AbstractTheme implements ThemeInterface
             //'elements' => @$_GET['elements'],
             //'keywords' => @$_GET['keywords'],
             //'keyfield' => @$_GET['keyfield'],
+            'sort'       => 'date',
+        );
+        $options_input = array(
+            'date_start' => $_GET['date-start'],
+            'date_end'   => $_GET['date-end'],
             'region'     => $_GET['region'],
             'audience'   => $_GET['audience'],
             'type'       => $_GET['type'],
-            'sort'       => 'date',
         );
+
+        // Merge all options
+        $options = array_replace($options_settings, $options, $options_input);
 
         /** @var $obj Api */
         $obj = $this->getApi()->setOptions($options);
