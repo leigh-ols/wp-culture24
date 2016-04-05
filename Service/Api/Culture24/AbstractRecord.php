@@ -9,7 +9,7 @@ namespace c24\Service\Api\Culture24;
 /**
  * Class that handles generic Culture24 record
  */
-abstract class Record
+abstract class AbstractRecord
 {
 
     /**

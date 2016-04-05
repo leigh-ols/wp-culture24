@@ -9,7 +9,7 @@ namespace c24\Service\Api\Culture24;
 /**
  * Class that handles Culture24 event record
  */
-class Event extends Record
+class Event extends AbstractRecord
 {
 
     protected static $_default_data_elements_array = array(

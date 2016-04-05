@@ -9,7 +9,7 @@ namespace c24\Service\Api\Culture24;
 /**
  * Class that handles Culture24 venue record
  */
-class Venue extends Record
+class Venue extends AbstractRecord
 {
 
     /**
