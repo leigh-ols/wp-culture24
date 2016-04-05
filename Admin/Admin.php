@@ -27,7 +27,7 @@ namespace c24\Admin;
 class Admin {
     protected $fallback_theme = '\c24\Themes\DefaultTheme\DefaultTheme';
 
-    public $settings = array('theme', 'url', 'version', 'key', 'tag', 'epp', 'vfp', 'vpp');
+    public $settings = array('theme', 'url', 'version', 'key', 'tag_text', 'tag_exact', 'epp', 'vfp', 'vpp');
     public $settings_prefix = 'c24api_';
 
     public function __construct() {
@@ -66,7 +66,7 @@ class Admin {
     }
 
     public function admin_init() {
-        register_setting('c24_options_group_api', 'c24', array($this, 'c24_save_settings'));
+        register_setting('c24_options_group_api', 'c24', array($this, 'saveSettings'));
         add_settings_section(
             'settings_api', 'API Settings', array($this, 'print_section_info'), 'c24-settings-api'
         );
@@ -83,7 +83,10 @@ class Admin {
             'c24_api_key', 'Key', array($this, 'create_field_api_key'), 'c24-settings-api', 'settings_api'
         );
         add_settings_field(
-            'c24_api_tag', 'Default search tag(s)', array($this, 'create_field_api_tag'), 'c24-settings-api', 'settings_api'
+            'c24_api_tag_text', 'Listing Tag Text', array($this, 'create_field_api_tag_text'), 'c24-settings-api', 'settings_api'
+        );
+        add_settings_field(
+            'c24_api_tag_exact', 'Listing Tag Exact', array($this, 'create_field_api_tag_exact'), 'c24-settings-api', 'settings_api'
         );
         add_settings_field(
             'c24_api_epp', 'Events per page', array($this, 'create_field_api_epp'), 'c24-settings-api', 'settings_api'
@@ -150,9 +153,15 @@ class Admin {
 <?php
     }
 
-    public function create_field_api_tag() {
+    public function create_field_api_tag_text() {
 ?>
-    <input type="text" id="input_c24api_tag" name="c24[tag]" value="<?php echo get_option('c24api_tag', ''); ?>" size="128" />
+    <input type="text" id="input_c24api_tag_text" name="c24[tag_text]" value="<?php echo get_option('c24api_tag_text', ''); ?>" size="128" />
+<?php
+    }
+
+    public function create_field_api_tag_exact() {
+?>
+    <input type="text" id="input_c24api_tag_exact" name="c24[tag_exact]" value="<?php echo get_option('c24api_tag_exact', ''); ?>" size="128" />
 <?php
     }
 
@@ -185,7 +194,7 @@ class Admin {
             or comma delimited list of words/phrases.';
     }
 
-    public function c24_save_settings($input) {
+    public function saveSettings($input) {
         $prefix = $this->settings_prefix;
         foreach ($this->settings as $v) {
             if (isset($input[$v])) {

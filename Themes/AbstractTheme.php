@@ -286,6 +286,8 @@ abstract class AbstractTheme implements ThemeInterface
     protected function setupListingApi()
     {
         $limit = $this->getAdmin()->get_option('epp');
+        $tag_exact = $this->getAdmin()->get_option('tag_exact');
+        $tag_text = $this->getAdmin()->get_option('tag_text');
         $offset = 0;
 
         if ($paged) {
@@ -298,20 +300,20 @@ abstract class AbstractTheme implements ThemeInterface
 
         $options = array(
             'query_type' => CULTURE24_API_EVENTS,
-            'date_start' => @$_GET['date-start'],
-            'date_end' => @$_GET['date-end'],
-            'limit' => $limit,
-            'offset' => (int)$offset,
-            //'tag' => 'mytag',
-            'tagText'=>'First+World+War+Centenary',
-            'tagExact'=>'East+Sussex',
+            'date_start' => $_GET['date-start'],
+            'date_end'   => $_GET['date-end'],
+            'limit'      => $limit,
+            'offset'     => (int)$offset,
+            //'tag'      => 'mytag',
+            'tagText'    => $tag_text,
+            'tagExact'   => $tag_exact,
             //'elements' => @$_GET['elements'],
             //'keywords' => @$_GET['keywords'],
             //'keyfield' => @$_GET['keyfield'],
-            'region' => @$_GET['region'],
-            'audience' => @$_GET['audience'],
-            'type' => @$_GET['type'],
-            'sort' => 'date',
+            'region'     => $_GET['region'],
+            'audience'   => $_GET['audience'],
+            'type'       => $_GET['type'],
+            'sort'       => 'date',
         );
 
         /** @var $obj Api */
