@@ -73,6 +73,6 @@ if ($obj->requestSet()) {
             <h3 class="c24venue__heading">Upcoming Events</h3>
         </div>
         <?php //c24printevents($c24objects); ?>
-<?php // @TODO This should be passed an array of objects, and then we can loop through them ?>
+        <?php // @TODO This should be passed an array of objects, and then we can loop through them ?>
     <?php endif; ?>
 </div>

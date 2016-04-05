@@ -180,6 +180,11 @@ class WPCulture24
         return false;
     }
 
+    public function getApi()
+    {
+        return $this->getService('Culture24Api');
+    }
+
     /**
      * getAdmin
      * Allows retrieval of Admin class. Really a temporary function to keep

@@ -4,7 +4,7 @@ global $__c24,$c24objects, $c24pager, $c24error, $c24debug;
 $c24objects = array();
 $c24pager = '';
 $c24error = $c24debug = false;
-$c24regions = c24_regions();
+$c24regions = $__c24->getApi()->getRegions();
 
 if (isset($_POST['c24'])) {
     if (!wp_verify_nonce($_POST['c24'], 'c24-test')) {

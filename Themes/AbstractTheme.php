@@ -40,6 +40,7 @@ abstract class AbstractTheme implements ThemeInterface
 
     /**
      * api
+     *
      * Use getApi()
      *
      * @var Api
@@ -234,9 +235,9 @@ abstract class AbstractTheme implements ThemeInterface
         $c24objects = array();
         $c24error = $c24debug = false;
         $date_start = $date_end = '';
-        $c24regions = c24_regions();
-        $c24audiences = c24_audiences();
-        $c24types = c24_types();
+        $c24regions = $this->getApi()->getRegions();
+        $c24audiences = $this->getApi()->getAudiences();
+        $c24types = $this->getApi()->getTypes();
 
         if ($obj->requestSet()) {
             $c24pages = (int)floor(($obj->get_found() / $c24perpage) + 1);

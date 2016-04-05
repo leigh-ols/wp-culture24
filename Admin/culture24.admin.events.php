@@ -7,9 +7,9 @@ $c24objects = array();
 $c24pager = '';
 $c24error = $c24debug = false;
 $date_start = $date_end = '';
-$c24regions = c24_regions();
-$c24audiences = c24_audiences();
-$c24types = c24_types();
+$c24regions = $__c24->getApi()->getRegions();
+$c24audiences = $__c24->getApi()->getAudiences();
+$c24types = $__c24->getApi()->getTypes();
 
 if (isset($_POST['c24'])) {
     if (!wp_verify_nonce($_POST['c24'], 'c24-test')) {
