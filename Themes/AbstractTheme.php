@@ -142,21 +142,21 @@ abstract class AbstractTheme implements ThemeInterface
      */
     public function shortcode($atts, $content = '')
     {
+        // Hack to force returning a string for now....
+        ob_start();
         if (isset($_GET['c24event'])) {
             $this->displayEvent();
-            return;
+            return ob_get_clean();
         }
 
         if (isset($_GET['c24venue'])) {
             $this->displayVenue();
-            return;
+            return ob_get_clean();
         }
 
         $this->displayListing();
-        return;
+        return ob_get_clean();
     }
-    // @TODO refactor below here
-
 
     /**
      * displayEvent
