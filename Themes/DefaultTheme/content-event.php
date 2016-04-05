@@ -14,9 +14,7 @@
 
 global $c24event;
 $c24img = $c24event->get_image_url();
-/**
- * JAMES woz here 2/5/14 - thumbnails are shite
- */
+// JAMES woz here 2/5/14 - thumbnails are shite
 if (strstr($c24img, 'thumb')) {
     $c24img = str_replace('thumb', 'medium', $c24img);
 }

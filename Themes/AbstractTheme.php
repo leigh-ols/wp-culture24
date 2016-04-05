@@ -251,35 +251,34 @@ abstract class AbstractTheme implements ThemeInterface
         } else {
             $c24error = $obj->get_message();
         }
-?>
-    <div class="c24">
+        // @TODO move this to a theme file?
+        ?>
+            <div class="c24">
 
-<?php $this->includeThemeFile('content-event-form.php');
-?>
-<?php $this->displayEvents($c24objects);
-?>
+                <?php $this->includeThemeFile('content-event-form.php'); ?>
+                <?php $this->displayEvents($c24objects); ?>
 
-        <?php //@TODO get real max number of results ?>
-        <div class="pagination">
-<?php echo $this->pager($obj->get_found(), $c24perpage);
-?>
-<?php $pages = $obj->get_found() / $c24perpage;
-?>
-        </div>
-        <div class="c24__logoc">
-            <img class="c24__logo" alt="Culture 24" src="/wp-content/plugins/wp-culture24/themes/default-theme/culture24-logo.png">
-            <p class="c24__logotext">Culture24 is the cultural data provider for the First World War Centenary Programme events calendar.</p>
-        </div>
-    </div>
-<?php
+                <?php //@TODO get real max number of results ?>
+                <div class="pagination">
+                    <?php echo $this->pager($obj->get_found(), $c24perpage); ?>
+                    <?php $pages = $obj->get_found() / $c24perpage; ?>
+                </div>
+                <div class="c24__logoc">
+                    <img class="c24__logo" alt="Culture 24" src="/wp-content/plugins/wp-culture24/themes/default-theme/culture24-logo.png">
+                    <p class="c24__logotext">Culture24 is the cultural data provider for the First World War Centenary Programme events calendar.</p>
+                </div>
+            </div>
+        <?php
 
     }
 
     /**
      * setupListingApi
+     *
      * Set up our Api object's options for a listing based on our plugin options
      * and our search form's $_POST values
      *
+     * @TODO Remove hard coded tags
      *
      * @return Api
      * @modified   James G 2/5/2014 swapped tagexact and tagtext to force just East Sussex
