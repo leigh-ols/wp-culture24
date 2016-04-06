@@ -31,8 +31,5 @@ define('CULTURE24_API_DATE_END_DEFAULT', date(CULTURE24_API_DATE_FORMAT_INPUT, t
 // Composer PSR-4 auto-loader
 require __DIR__ . '/vendor/autoload.php';
 
-// Temp require to keep existing functionality working during refactor
-require __DIR__ . '/culture24.php';
-
 $__c24 = new WPCulture24();
 
