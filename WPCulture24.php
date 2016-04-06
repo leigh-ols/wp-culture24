@@ -180,6 +180,14 @@ class WPCulture24
         return false;
     }
 
+    /**
+     * getApi
+     *
+     * Shortcut for $this->getService('Culsture24Api');
+     *
+     * @return Culture24Api
+     * @access public
+     */
     public function getApi()
     {
         return $this->getService('Culture24Api');
