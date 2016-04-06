@@ -17,8 +17,8 @@ define('CULTURE24__VERSION', '0.1.0');
 define('CULTURE24__CONNECTOR_PATH', dirname(__FILE__));
 define('CULTURE24__ASSETS_URI', plugins_url('assets/', __FILE__));
 define('CULTURE24__VENDOR_URI', plugins_url('vendor/', __FILE__));
-define('CULTURE24__ASSETS_PATH', DAMS_CONNECTOR_PATH.'/assets/');
-define('CULTURE24__VENDOR_PATH', DAMS_CONNECTOR_PATH.'/vendor/');
+define('CULTURE24__ASSETS_PATH', CULTURE24__CONNECTOR_PATH.'/assets/');
+define('CULTURE24__VENDOR_PATH', CULTURE24__CONNECTOR_PATH.'/vendor/');
 
 defined('CULTURE24_API_DEBUG') or define('CULTURE24_API_DEBUG', false);
 defined('CULTURE24_API_EVENTS') or define('CULTURE24_API_EVENTS', 'events');
