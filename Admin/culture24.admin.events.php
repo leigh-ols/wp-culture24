@@ -45,7 +45,7 @@ if (isset($_POST['c24'])) {
     } else {
         $c24error = $obj->get_message();
     }
-    $c24debug = c24_view_event_debug($obj, isset($_REQUEST['debug-raw']));
+    $c24debug = $this->viewEventDebug($obj, isset($_REQUEST['debug-raw']));
 }
 
 wp_enqueue_script('jquery-ui-datepicker');

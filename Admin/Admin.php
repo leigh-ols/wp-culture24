@@ -249,4 +249,161 @@ class Admin {
         }
         return $theme_namespace;
     }
+
+
+    protected function viewEventDebug($obj, $full = FALSE) {
+        $result = $obj->get_last_request() . '<br />'
+            . 'status: ' . $obj->get_message() . '<br />'
+            . 'total: ' . $obj->get_found() . '<br />'
+            . 'validation errors: ' . print_r($obj->get_validation_errors(), 1) . '<br />';
+        if ($full) {
+            $result .= print_r($obj->get_records(), 1) . '<br /><br />';
+        }
+        return $result;
+    }
+
+    /**
+     * Format dates
+     *
+     * @param array $date_array
+     * @return array of formatted date strings
+     */
+    protected function formatDates($dates, $format = 'd F Y') {
+        if (empty($dates)) {
+            return '';
+        } else {
+            $unique = array();
+            foreach ($dates as $k => $v) {
+                $start = strtotime(str_replace('/', '-', $v->startDate));
+                $end = strtotime(str_replace('/', '-', $v->endDate));
+                if ($start == $end) {
+                    if (!in_array($start, $unique)) {
+                        $dates[$k] = date($format, $start);
+                        $unique[] = $start;
+                    } else {
+                        unset($dates[$k]);
+                    }
+                } else {
+                    $dates[$k] = date($format, $start) . ' - ' . date($format, $end);
+                }
+            }
+        }
+        return $dates;
+    }
+
+    /**
+     *
+     * @param array $date_array
+     */
+    protected function testDates()
+    {
+        $result = array();
+
+        $dates = array(
+            0 => array('startDate' => '29/07/2013', 'startTime' => '11:00', 'endDate' => '29/07/2013', 'endTime' => '15:00')
+        );
+        $arg = $this->makeTestDateArray($dates);
+        $result[] = array(
+            'name' => 'Single date with times',
+            'dates' => $dates,
+            'result' => $this->formatDates($arg),
+        );
+
+        $dates = array(
+            0 => array('startDate' => '29/07/2013', 'startTime' => '10:00', 'endDate' => '29/07/2013', 'endTime' => '11:00'),
+            1 => array('startDate' => '29/07/2013', 'startTime' => '12:00', 'endDate' => '29/07/2013', 'endTime' => '13:00'),
+        );
+        $arg = $this->makeTestDateArray($dates);
+        $result[] = array(
+            'name' => 'Single date with multiple times',
+            'dates' => $dates,
+            'result' => $this->formatDates($arg),
+        );
+
+        $dates = array(
+            0 => array('startDate' => '29/07/2013', 'startTime' => '', 'endDate' => '29/07/2013', 'endTime' => ''),
+        );
+        $dates = $this->makeTestDateArray($dates);
+        $result[] = array(
+            'name' => 'Single date without times',
+            'dates' => $dates,
+            'result' => $this->formatDates($arg),
+        );
+
+        $dates = array(
+            0 => array('startDate' => '26/07/2013', 'startTime' => '11:00', 'endDate' => '29/07/2013', 'endTime' => '15:00'),
+        );
+        $arg = $this->makeTestDateArray($dates);
+        $result[] = array(
+            'name' => 'Single date range with times',
+            'dates' => $dates,
+            'result' => $this->formatDates($arg),
+        );
+
+        $dates = array(
+            0 => array('startDate' => '26/07/2013', 'startTime' => '', 'endDate' => '29/07/2013', 'endTime' => ''),
+        );
+        $arg = $this->makeTestDateArray($dates);
+        $result[] = array(
+            'name' => 'Single date range without times',
+            'dates' => $dates,
+            'result' => $this->formatDates($arg),
+        );
+
+        $dates = array(
+            1 => array('startDate' => '20/07/2013', 'startTime' => '15:00', 'endDate' => '20/07/2013', 'endTime' => '15:30'),
+            2 => array('startDate' => '27/07/2013', 'startTime' => '15:00', 'endDate' => '27/07/2013', 'endTime' => '15:30'),
+        );
+        $arg = $this->makeTestDateArray($dates);
+        $result[] = array(
+            'name' => 'Multiple single dates with times',
+            'dates' => $dates,
+            'result' => $this->formatDates($arg),
+        );
+
+        $dates = array(
+            1 => array('startDate' => '05/07/2013', 'startTime' => '', 'endDate' => '05/07/2013', 'endTime' => ''),
+            2 => array('startDate' => '12/07/2013', 'startTime' => '', 'endDate' => '12/07/2013', 'endTime' => ''),
+        );
+        $arg = $this->makeTestDateArray($dates);
+        $result[] = array(
+            'name' => 'Multiple single dates without times',
+            'dates' => $dates,
+            'result' => $this->formatDates($arg),
+        );
+
+        $dates = array(
+            1 => array('startDate' => '05/07/2013', 'startTime' => '15:00', 'endDate' => '12/07/2013', 'endTime' => '15:30'),
+            2 => array('startDate' => '18/07/2013', 'startTime' => '15:00', 'endDate' => '25/07/2013', 'endTime' => '15:30'),
+        );
+        $arg = $this->makeTestDateArray($dates);
+        $result[] = array(
+            'name' => 'Multiple date ranges with times',
+            'dates' => $dates,
+            'result' => $this->formatDates($arg),
+        );
+
+        $dates = array(
+            1 => array('startDate' => '05/07/2013', 'startTime' => '', 'endDate' => '12/07/2013', 'endTime' => ''),
+            2 => array('startDate' => '18/07/2013', 'startTime' => '', 'endDate' => '25/07/2013', 'endTime' => ''),
+        );
+        $arg = $this->makeTestDateArray($dates);
+        $result[] = array(
+            'name' => 'Multiple date ranges without times',
+            'dates' => $dates,
+            'result' => $this->formatDates($arg),
+        );
+
+        return $result;
+    }
+
+    protected function makeTestDateArray($dates)
+    {
+        $result = array();
+        foreach ($dates as $v) {
+            $result[] = (object) $v;
+        }
+        return $result;
+    }
+
 }

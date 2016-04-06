@@ -65,9 +65,10 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ### LB @TODO
+Make new Admin extend AbstractTheme, move theme specific functions from Admin 
+to AbstractTheme, so functions can be used in Front end Themes.
+Ensure Admin does not show up as front end theme (front end disabled property?)
 Generally tidy up the code
 Clear out superfluous culture24.admin.*.php files
-Create a single admin page with all required options within it.
-Clear out superfluous theme files
-Create a single default theme
 Allow use of custom themes with option in admin for which theme to use
+
