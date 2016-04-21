@@ -1,5 +1,4 @@
 <?php
-global $c24event;
 //var_dump($c24event);
 $c24img = $c24event->get_image_url();
 $c24title = $c24event->get_name();

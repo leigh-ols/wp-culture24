@@ -124,8 +124,13 @@ abstract class AbstractTheme implements ThemeInterface
      * @return self
      * @access protected
      */
-    protected function includeThemeFile($file)
+    protected function includeThemeFile($file, $vars = array())
     {
+        // Make vars available to template file
+        foreach ($vars as $k => $v) {
+            ${$k} = $v;
+        }
+
         include $this->getThemePath().'/'.$file;
         return $this;
     }
@@ -161,15 +166,10 @@ abstract class AbstractTheme implements ThemeInterface
     /**
      * displayEvent
      *
-     * @TODO remove global $c24event, this is being used by the templates...
-     * When we have proper pages instead of shortcode, we can just pass this as
-     * a param to page constructor
-     *
      * @return void
      */
     public function displayEvent()
     {
-        global $c24event;
         $options = array(
             'query_type' => CULTURE24_API_EVENTS
         );
@@ -180,7 +180,7 @@ abstract class AbstractTheme implements ThemeInterface
             $c24objects = $obj->get_objects();
             foreach ($c24objects as $object) {
                 $c24event = $object;
-                $this->includeThemeFile('page-event.php');
+                $this->includeThemeFile('page-event.php', array('c24event' => $c24event));
             }
         } else {
             $c24error = $obj->get_message();
@@ -191,14 +191,10 @@ abstract class AbstractTheme implements ThemeInterface
     /**
      * displayVenue
      *
-     * @TODO Remove c24venue (See displayEvent docblock for details)
-     *
      * @return void
      */
     public function displayVenue()
     {
-        global $c24venue;
-
         $options = array(
             'query_type' => CULTURE24_API_VENUES
         );
@@ -209,7 +205,7 @@ abstract class AbstractTheme implements ThemeInterface
             $c24objects = $obj->get_objects();
             foreach ($c24objects as $object) {
                 $c24venue = $object;
-                $this->includeThemeFile('page-venue.php');
+                $this->includeThemeFile('page-venue.php', array('c24venue' => $c24venue));
             }
         } else {
             $c24error = $obj->get_message();
@@ -335,11 +331,10 @@ abstract class AbstractTheme implements ThemeInterface
      */
     public function displayEvents($events)
     {
-        global $c24event;
         echo '<div class="c24events-list">';
         foreach ($events as $object) {
             $c24event = $object;
-            $this->includeThemeFile('content-event.php');
+            $this->includeThemeFile('content-event.php', array('c24event' => $c24event));
         }
         echo '</div>';
     }
