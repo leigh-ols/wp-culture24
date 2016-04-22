@@ -61,6 +61,6 @@ if (!$c24charges && !$c24venue->get_free()) {
             <h3 class="c24venue__heading">Upcoming Events</h3>
         </div>
         <?php //c24printevents($c24objects); ?>
-        <?php // @TODO This should be passed an array of objects, and then we can loop through them ?>
+        <?php // @TODO We have an array of events... just need to display them ?>
     <?php endif; ?>
 </div>
