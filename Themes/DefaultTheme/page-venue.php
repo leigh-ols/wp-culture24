@@ -14,7 +14,6 @@
 namespace c24;
 
 
-global $__c24, $c24venue;
 $c24img = $c24venue->get_image_url();
 $c24title = $c24venue->get_name();
 $c24description = $c24venue->get_description();
@@ -25,17 +24,6 @@ $c24charges = $c24venue->get_charges();
 
 if (!$c24charges && !$c24venue->get_free()) {
     $c24charges = 'Free';
-}
-$options = array(
-    'keyfield' => 'venueID',
-    'keyword'  => $_GET['c24venue']
-);
-$obj = $__c24->getService('Culture24Api')->setOptions($options);
-if ($obj->requestSet()) {
-    $c24objects = $obj->get_objects();
-} else {
-    $c24objects = false;
-    $c24error = $obj->get_message();
 }
 ?>
 <div class="c24venue">
@@ -68,7 +56,7 @@ if ($obj->requestSet()) {
         ?>
     </div>
 
-    <?php if ($c24objects) : ?>
+    <?php if ($venue_events) : ?>
         <div class="entry-content content-block">
             <h3 class="c24venue__heading">Upcoming Events</h3>
         </div>

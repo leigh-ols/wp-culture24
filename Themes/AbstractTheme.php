@@ -195,17 +195,41 @@ abstract class AbstractTheme implements ThemeInterface
      */
     public function displayVenue()
     {
+        $venue_id = $_GET['c24venue'];
+
         $options = array(
             'query_type' => CULTURE24_API_VENUES
         );
 
         /** @var $obj Api */
         $obj = $this->getApi()->setOptions($options);
-        if ($obj->requestID($_GET['c24venue'])) {
+        if ($obj->requestID($venue_id)) {
             $c24objects = $obj->get_objects();
             foreach ($c24objects as $object) {
                 $c24venue = $object;
-                $this->includeThemeFile('page-venue.php', array('c24venue' => $c24venue));
+
+                // Get upcoming events for the venue
+                $venue_events = false;
+                $options = array(
+                    'keyfield' => 'venueID',
+                    'keyword'  => $venue_id
+                );
+                $obj = $this->getApi()->setOptions($event_options);
+                if ($obj->requestSet()) {
+                    $venue_events = $obj->get_objects();
+                } else {
+                    $c24error = $obj->get_message();
+                }
+
+                // Include the venue template, passing the venue obj and its
+                // events
+                $this->includeThemeFile(
+                    'page-venue.php',
+                    array(
+                        'c24venue' => $c24venue,
+                        'venue_events' => $venue_events
+                    )
+                );
             }
         } else {
             $c24error = $obj->get_message();
@@ -216,9 +240,6 @@ abstract class AbstractTheme implements ThemeInterface
 
     /**
      * displayListing
-     *
-     * @TODO remove global $pages, refactor global calls
-     * c24_regions/audiences/types etc
      *
      * @return void
      */
@@ -234,7 +255,6 @@ abstract class AbstractTheme implements ThemeInterface
         $c24types = $this->getApi()->getTypes();
 
         if ($obj->requestSet()) {
-            $c24pages = (int)floor(($obj->get_found() / $c24perpage) + 1);
 
             $c24objects = $obj->get_objects();
 
@@ -255,7 +275,6 @@ abstract class AbstractTheme implements ThemeInterface
                 <?php //@TODO get real max number of results ?>
                 <div class="pagination">
                     <?php echo $this->pager($obj->get_found(), $c24perpage); ?>
-                    <?php //$pages = $obj->get_found() / $c24perpage; ?>
                 </div>
                 <div class="c24__logoc">
                     <img class="c24__logo" alt="Culture 24" src="/wp-content/plugins/wp-culture24/themes/default-theme/culture24-logo.png">
