@@ -1,5 +1,5 @@
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;language=en" type="text/javascript"></script>
-<script src="<?php echo plugins_url(); ?>/culture24/theme/gmap3.js" type="text/javascript"></script>
+<script src="<?php echo CULTURE24__VENDOR_URI; ?>gmap3.js" type="text/javascript"></script>
 
 <?php
 global $c24objects, $c24error, $c24debug, $c24mapsize;

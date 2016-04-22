@@ -80,7 +80,7 @@ if ($_REQUEST['map'] == '') {
         include('theme/content-event-debug.php');
     }
 } else {
-    if (file_exists(WP_CONTENT_DIR . '/plugins/culture24/theme/gmap3.js')) {
+    if (file_exists(CULTURE24__VENDOR_PATH . 'gmap3.js')) {
         global $c24mapsize;
         $c24mapsize = $_REQUEST['map'];
         include('theme/functions-c24.php');
@@ -88,7 +88,7 @@ if ($_REQUEST['map'] == '') {
     } else {
 ?>
 
-        <h3>Javascript file <a href="https://github.com/jbdemonte/gmap3" target="_blank">gmap3.js</a> not found in culture24/theme folder</h3>
+    <h3>Javascript file <a href="https://github.com/jbdemonte/gmap3" target="_blank">gmap3.js</a> not found in <?php echo CULTURE24__VENDOR_PATH;?> folder</h3>
 
 <?php
 
