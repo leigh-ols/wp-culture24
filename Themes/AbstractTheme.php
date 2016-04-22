@@ -30,9 +30,7 @@ use c24\Service\Api\Culture24\Api as Api;
 abstract class AbstractTheme implements ThemeInterface
 {
     /**
-     * admin
-     * Private to prevent user themes from replacing with anything but an Admin class
-     * Use getAdmin() and setAdmin() for access in implementations/themes
+     * We use the admin class to retrieve settings from WP
      *
      * @var Admin
      */
@@ -246,7 +244,7 @@ abstract class AbstractTheme implements ThemeInterface
     public function displayListing()
     {
         $obj = $this->setupListingApi();
-        $c24perpage = $this->getAdmin()->get_option('epp');
+        $c24perpage = $this->getAdmin()->getOption('epp');
         $c24objects = array();
         $c24error = $c24debug = false;
         $date_start = $date_end = '';
@@ -297,9 +295,9 @@ abstract class AbstractTheme implements ThemeInterface
      */
     protected function setupListingApi($options = array())
     {
-        $limit = $this->getAdmin()->get_option('epp');
-        $tag_exact = $this->getAdmin()->get_option('tag_exact');
-        $tag_text = $this->getAdmin()->get_option('tag_text');
+        $limit = $this->getAdmin()->getOption('epp');
+        $tag_exact = $this->getAdmin()->getOption('tag_exact');
+        $tag_text = $this->getAdmin()->getOption('tag_text');
         $offset = 0;
 
         if ($paged) {
@@ -391,11 +389,10 @@ abstract class AbstractTheme implements ThemeInterface
      * Compile a WP pagination string that can be printed in a template
      *
      * Example usage:
-     * global $c24pager
-     * $c24pager = c24_pager($c24obj->get_found(), $_POST['limit']);
+     * echo $this->pager($c24obj->get_found(), $_POST['limit']);
      *
-     * @TODO Remove this, If the user doesn't want WordPress' pagination they
-     * should use a plugin
+     * @TODO Consider removing this, If the user doesn't want WordPress' pagination they
+     * should use a plugin. (Dependant on if we keep pages as shortcodes)
      *
      * @param type $total_items
      * @param type $per_page
