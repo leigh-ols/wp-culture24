@@ -177,7 +177,7 @@ abstract class AbstractTheme implements ThemeInterface
         if ($obj->requestID($_GET['c24event'])) {
             $c24objects = $obj->get_objects();
             foreach ($c24objects as $object) {
-                $c24event = $object;
+                $c24event = $this->decorateEvents($object);
                 $this->includeThemeFile('page-event.php', array('c24event' => $c24event));
             }
         } else {
@@ -204,17 +204,18 @@ abstract class AbstractTheme implements ThemeInterface
         if ($obj->requestID($venue_id)) {
             $c24objects = $obj->get_objects();
             foreach ($c24objects as $object) {
-                $c24venue = $object;
+                $c24venue = $this->decorateVenues($object);
 
                 // Get upcoming events for the venue
                 $venue_events = false;
-                $options = array(
+                $event_options = array(
+                    'query_type' => CULTURE24_API_EVENTS,
                     'keyfield' => 'venueID',
                     'keyword'  => $venue_id
                 );
                 $obj = $this->getApi()->setOptions($event_options);
                 if ($obj->requestSet()) {
-                    $venue_events = $obj->get_objects();
+                    $venue_events = $this->decorateEvents($obj->get_objects());
                 } else {
                     $c24error = $obj->get_message();
                 }
@@ -254,7 +255,7 @@ abstract class AbstractTheme implements ThemeInterface
 
         if ($obj->requestSet()) {
 
-            $c24objects = $obj->get_objects();
+            $c24objects = $this->decorateEvents($obj->get_objects());
 
             if ($date_range = $obj->get_dates()) {
                 $date_start = str_replace('/', '-', substr($date_range, 0, strpos($date_range, ',')));
@@ -422,4 +423,80 @@ abstract class AbstractTheme implements ThemeInterface
         return $result;
     }
 
+    /**
+     * decorateEvent
+     *
+     * @TODO consider using a factory for this, as we shouldn't be 'newing'
+     * stuff here
+     *
+     * @param mixed $event
+     *
+     * @return void
+     * @throws [ExceptionClass] [Description]
+     * @access
+     */
+    protected function decorateEvents($events)
+    {
+        $decorator_class = $this->admin->getThemeNamespace().'/EventDecorator';
+        if (!class_exists($decorator_class)) {
+            $decorator_class = '\c24\Themes\EventDecorator';
+        }
+
+        // If it's just a single event, decorate it and return it.
+        if (!is_array($events)) {
+            return $this->decorate($events, $decorator_class);
+        }
+
+        // If we have an array of events, decorate them all and return the
+        // array
+        foreach ($events as $k => $event) {
+            $events[$k] = $this->decorate($event, $decorator_class);
+        }
+        return $events;
+    }
+
+    /**
+     * decorateVenue
+     *
+     * @TODO consider using a factory for this, as we shouldn't be 'newing'
+     * stuff here
+     *
+     * @param mixed $venue
+     *
+     * @return void
+     * @throws [ExceptionClass] [Description]
+     * @access
+     */
+    protected function decorateVenues($venues)
+    {
+        $decorator_class = $this->admin->getThemeNamespace().'/VenueDecorator';
+        if (!class_exists($decorator_class)) {
+            $decorator_class = '\c24\Themes\VenueDecorator';
+        }
+
+        if (!is_array($venues)) {
+            return $this->decorate($venues, $decorator_class);
+        }
+
+        foreach ($venues as $k => $venue) {
+            $venues[$k] = $this->decorate($venue, $decorator_class);
+        }
+
+        return $venues;
+    }
+
+    /**
+     * decorate
+     *
+     * @param mixed $object
+     * @param mixed $decorator
+     *
+     * @return void
+     * @throws [ExceptionClass] [Description]
+     * @access
+     */
+    protected function decorate($object, $decorator)
+    {
+        return new $decorator($object);
+    }
 }

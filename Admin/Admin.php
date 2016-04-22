@@ -498,6 +498,30 @@ class Admin
     }
 
     /**
+     * getThemeNamespace
+     *
+     * Return the namespace to the current Theme
+     *
+     * @return string
+     * @access public
+     */
+    public function getThemeNamespace()
+    {
+        // Get the Theme
+        $theme = $this->getTheme();
+
+        // Remove the Theme Class name from the theme to return just the
+        // namespace
+        // c24\Themes\DefaultTheme\DefaultTheme
+        // becomes:
+        // c24\ThemesDefaultTheme
+        $theme_namespaces = explode('\\', $theme);
+        array_pop($theme_namespaces);
+        $theme_namespace = implode('\\', $theme_namespaces);
+        return $theme_namespace;
+    }
+
+    /**
      * viewEventDebug
      *
      * Genuinely not a clue at this moment in time!
