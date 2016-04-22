@@ -224,8 +224,6 @@ abstract class AbstractTheme implements ThemeInterface
      */
     public function displayListing()
     {
-        global $pages;
-
         $obj = $this->setupListingApi();
         $c24perpage = $this->getAdmin()->get_option('epp');
         $c24objects = array();
@@ -257,7 +255,7 @@ abstract class AbstractTheme implements ThemeInterface
                 <?php //@TODO get real max number of results ?>
                 <div class="pagination">
                     <?php echo $this->pager($obj->get_found(), $c24perpage); ?>
-                    <?php $pages = $obj->get_found() / $c24perpage; ?>
+                    <?php //$pages = $obj->get_found() / $c24perpage; ?>
                 </div>
                 <div class="c24__logoc">
                     <img class="c24__logo" alt="Culture 24" src="/wp-content/plugins/wp-culture24/themes/default-theme/culture24-logo.png">
