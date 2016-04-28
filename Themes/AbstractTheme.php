@@ -387,10 +387,6 @@ abstract class AbstractTheme implements ThemeInterface
         $offset = 0;
 
         if ($paged) {
-            $offset = $paged * $limit;
-        }
-
-        if ($paged) {
             $offset = ($paged - 1) * $limit;
         }
 

@@ -27,6 +27,10 @@ defined('CULTURE24_API_MAX_TRIES') or define('CULTURE24_API_MAX_TRIES', 3);
 define('CULTURE24_API_DATE_FORMAT_INPUT', 'd-m-Y');
 define('CULTURE24_API_DATE_FORMAT_OUTPUT', 'd/m/Y');
 define('CULTURE24_API_DATE_END_DEFAULT', date(CULTURE24_API_DATE_FORMAT_INPUT, time() + (7 * (24 * 3600))));
+// @TODO, this is used for features which aren't necessarily displayed on the
+// event page. When we allow page use through overriding slug instead of using
+// a shortcode, we can remove this
+define('C24_SLUG', 'events');
 
 // Composer PSR-4 auto-loader
 require __DIR__ . '/vendor/autoload.php';
