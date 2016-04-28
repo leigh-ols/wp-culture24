@@ -35,7 +35,8 @@ namespace c24\Admin;
  */
 class Admin
 {
-    protected $fallback_theme = '\c24\Themes\DefaultTheme\DefaultTheme';
+    protected $fallback_theme = 'DefaultTheme';
+    protected $theme_root_namespace = '\c24\Themes';
 
     /**
      * settings field keys
@@ -212,22 +213,20 @@ class Admin
      */
     public function createFieldTheme()
     {
-        $current_namespace = $this->getOption('theme', $this->fallback_theme);
+        $current_theme = $this->getOption('theme', $this->fallback_theme);
         $theme_paths = glob(CULTURE24__CONNECTOR_PATH . '/Themes/*', GLOB_ONLYDIR);
 
         $themes = array();
+
         foreach ($theme_paths as $theme) {
             $theme = basename($theme);
-            $themes[$theme] = '\\c24\\Themes\\'.$theme.'\\'.$theme;
+            $name = str_replace('Theme', '', $theme);
+            $themes[$theme] = $name;
         }
         ?>
             <select name="c24[theme]">
-                <?php foreach ($themes as $theme_name => $theme_namespace) : ?>
-                    <?php //$theme = basename($theme); ?>
-                    <option value="<?php echo $theme_namespace;
-        ?>" <?php echo($theme_namespace == $current_namespace ? 'selected="selected"' : '');
-        ?>><?php echo $theme_name;
-        ?></option>
+                <?php foreach ($themes as $theme => $theme_name) : ?>
+                <option value="<?php echo $theme; ?>" <?php echo($theme == $current_theme ? 'selected="selected"' : ''); ?>><?php echo $theme_name; ?></option>
                 <?php endforeach;
         ?>
             </select>
@@ -488,11 +487,24 @@ class Admin
      */
     public function getTheme()
     {
-        $theme_namespace = $this->getOption('theme', $this->fallback_theme);
+        $theme = $this->getOption('theme', $this->fallback_theme);
+        $theme_namespace = $this->theme_root_namespace.'\\'.$theme.'\\'.$theme;
         if (!class_exists($theme_namespace)) {
+
+            // DEBUG
+            echo "\r\n<pre><!-- \r\n";
+            $DBG_DBG = debug_backtrace();
+            foreach ($DBG_DBG as $DD) {
+                echo implode(':', array(@$DD['file'], @$DD['line'], @$DD['function'])) . "\r\n";
+            }
+            echo " -->\r\n";
+            var_dump($theme_namespace);
+            echo "</pre>\r\n";
+
             // @TODO add some sort of admin alert here
-            $theme_namespace = $this->fallback_theme;
-            update_option($this->settings_prefix . 'theme', $theme_namespace);
+            $theme = $this->fallback_theme;
+            update_option($this->settings_prefix . 'theme', $theme);
+            $theme_namespace = $this->theme_root_namespace.'\\'.$theme.'\\'.$theme;
         }
         return $theme_namespace;
     }
