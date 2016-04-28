@@ -2,9 +2,9 @@
 //var_dump($c24event);
 $c24img = $c24event->get_image_url();
 $c24title = $c24event->get_name();
-$c24url = "?c24event=".$c24event->get_event_id();
+$c24url = "?event=".$c24event->get_event_id();
 $c24venue = $c24event->get_venue_name();
-$c24venueurlopen = '<a href="?c24venue='.$c24event->get_venue_id().'">';
+$c24venueurlopen = '<a href="?venue='.$c24event->get_venue_id().'">';
 $c24venueurlclose = '</a>';
 $c24description = $c24event->get_description();
 $c24type = $c24event->get_type();

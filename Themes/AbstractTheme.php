@@ -16,6 +16,7 @@ namespace c24\Themes;
 
 use c24\Admin\Admin;
 use c24\Service\Api\Culture24\Api as Api;
+use c24\Service\Validator\ValidatorInterface;
 
 /**
  * Class AbstractTheme
@@ -53,10 +54,77 @@ abstract class AbstractTheme implements ThemeInterface
      */
     private $theme_path;
 
-    public function __construct(Admin $admin, Api $api)
+    /**
+     * Array of user input field keys accepted by this class
+     *
+     * @var array
+     */
+    protected $input_fields = array(
+        'date_start',
+        'date_end',
+        'region',
+        'audience',
+        'type',
+        'event',
+        'venue'
+    );
+
+    /**
+     * Input validation field rules (see the validator)
+     *
+     * @var array
+     */
+    protected $input_rules = array(
+        'date_start' => 'regex,/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/',
+        'date_end'   => 'regex,/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/',
+        'region'     => 'regex,/[ 0-9a-zA-Z\-\(\)]+/',
+        'audience'   => 'regex,/[ 0-9a-zA-Z\-\(\)]+/',
+        'type'       => 'regex,/[ 0-9a-zA-Z\-\(\)]+/',
+        'event'      => 'regex,/EVENT[0-9]{6}/',
+        'venue'      => 'regex,/[A-Z]{2}[0-9]{6}/'
+    );
+
+    /**
+     * Input validation field keys (see the validator)
+     *
+     * @var array
+     */
+    protected $input_filters = array(
+        'date_start' => 'trim|sanitize_string',
+        'date_end'   => 'trim|sanitize_string',
+        'region'     => 'trim|sanitize_string',
+        'audience'   => 'trim|sanitize_string',
+        'type'       => 'trim|sanitize_string'
+    );
+
+
+    /**
+     * Stores user input. Must be set and accessed through setInput() to ensure
+     * proper sanitation/validation
+     *
+     * @var array
+     */
+    private $input = array();
+
+    /**
+     * __construct
+     *
+     * @param Admin $admin
+     * @param Api $api
+     * @param ValidatorInterface $validator
+     *
+     * @return void
+     * @access public
+     */
+    public function __construct(Admin $admin, Api $api, ValidatorInterface $validator)
     {
         $this->admin = $admin;
         $this->api = $api;
+        $this->validator = $validator;
+
+        $this->setInput($_REQUEST);
+
+
         // Get the path of $this
         $theme_reflection = new \ReflectionClass($this);
         $this->theme_path = dirname($theme_reflection->getFileName());
@@ -125,6 +193,7 @@ abstract class AbstractTheme implements ThemeInterface
     protected function includeThemeFile($file, $vars = array())
     {
         // Make vars available to template file
+        $vars['input'] = $this->getInput();
         foreach ($vars as $k => $v) {
             ${$k} = $v;
         }
@@ -139,7 +208,6 @@ abstract class AbstractTheme implements ThemeInterface
      * @TODO At the moment we're using _GET params and a shortcode to display the
      * pages... This is uuuugly. After primary refactor of code, consider using
      * Page class from dams-connector, allowing for url rewrites etc
-     * @TODO If this is a shortcode it should return a string... not echo out
      *
      * @return void
      */
@@ -147,13 +215,13 @@ abstract class AbstractTheme implements ThemeInterface
     {
         // Hack to force returning a string for now....
         ob_start();
-        if (isset($_GET['c24event'])) {
-            $this->displayEvent();
+        if ($event = $this->getInput('event')) {
+            $this->displayEvent($event);
             return ob_get_clean();
         }
 
-        if (isset($_GET['c24venue'])) {
-            $this->displayVenue();
+        if ($venue = $this->getInput('venue')) {
+            $this->displayVenue($venue);
             return ob_get_clean();
         }
 
@@ -166,7 +234,7 @@ abstract class AbstractTheme implements ThemeInterface
      *
      * @return void
      */
-    public function displayEvent()
+    public function displayEvent($event)
     {
         $options = array(
             'query_type' => CULTURE24_API_EVENTS
@@ -174,7 +242,7 @@ abstract class AbstractTheme implements ThemeInterface
 
         /** @var $obj Api */
         $obj = $this->getApi()->setOptions($options);
-        if ($obj->requestID($_GET['c24event'])) {
+        if ($obj->requestID($event)) {
             $c24objects = $obj->get_objects();
             foreach ($c24objects as $object) {
                 $c24event = $this->decorateEvents($object);
@@ -191,17 +259,15 @@ abstract class AbstractTheme implements ThemeInterface
      *
      * @return void
      */
-    public function displayVenue()
+    public function displayVenue($venue)
     {
-        $venue_id = $_GET['c24venue'];
-
         $options = array(
             'query_type' => CULTURE24_API_VENUES
         );
 
         /** @var $obj Api */
         $obj = $this->getApi()->setOptions($options);
-        if ($obj->requestID($venue_id)) {
+        if ($obj->requestID($venue)) {
             $c24objects = $obj->get_objects();
             foreach ($c24objects as $object) {
                 $c24venue = $this->decorateVenues($object);
@@ -211,7 +277,7 @@ abstract class AbstractTheme implements ThemeInterface
                 $event_options = array(
                     'query_type' => CULTURE24_API_EVENTS,
                     'keyfield' => 'venueID',
-                    'keyword'  => $venue_id
+                    'keyword'  => $venue
                 );
                 $obj = $this->getApi()->setOptions($event_options);
                 if ($obj->requestSet()) {
@@ -250,8 +316,26 @@ abstract class AbstractTheme implements ThemeInterface
         $c24error = $c24debug = false;
         $date_start = $date_end = '';
         $c24regions = $this->getApi()->getRegions();
-        $c24audiences = $this->getApi()->getAudiences();
-        $c24types = $this->getApi()->getTypes();
+        $audiences = $this->getApi()->getAudiences();
+        $types = $this->getApi()->getTypes();
+
+        $form_vars = array(
+            'date_start' => $date_start,
+            'date_end' => $date_end,
+            'audiences' => $audiences,
+            'audience' => '',
+            'types' => $types,
+            'type' => ''
+        );
+
+        // Override defaults with validated+sanitized+filters user submitted
+        // values
+        $input = $this->getInput();
+        foreach ($form_vars as $k => $v) {
+            if (isset($input[$k])) {
+                $form_vars[$k] = $input[$k];
+            }
+        }
 
         if ($obj->requestSet()) {
 
@@ -268,7 +352,7 @@ abstract class AbstractTheme implements ThemeInterface
         ?>
             <div class="c24">
 
-                <?php $this->includeThemeFile('content-event-form.php'); ?>
+                <?php $this->includeThemeFile('content-event-form.php', $form_vars); ?>
                 <?php $this->displayEvents($c24objects); ?>
 
                 <?php //@TODO get real max number of results ?>
@@ -296,6 +380,7 @@ abstract class AbstractTheme implements ThemeInterface
      */
     protected function setupListingApi($options = array())
     {
+        global $paged;
         $limit = $this->getAdmin()->getOption('epp');
         $tag_exact = $this->getAdmin()->getOption('tag_exact');
         $tag_text = $this->getAdmin()->getOption('tag_text');
@@ -321,16 +406,10 @@ abstract class AbstractTheme implements ThemeInterface
             //'keyfield' => @$_GET['keyfield'],
             'sort'       => 'date',
         );
-        $options_input = array(
-            'date_start' => $_GET['date-start'],
-            'date_end'   => $_GET['date-end'],
-            'region'     => $_GET['region'],
-            'audience'   => $_GET['audience'],
-            'type'       => $_GET['type'],
-        );
+        $options_input = $this->getInput();
 
         // Merge all options
-        $options = array_replace($options_settings, $options, $options_input);
+        $options = array_replace($options_settings, $options_input);
 
         /** @var $obj Api */
         $obj = $this->getApi()->setOptions($options);
@@ -498,5 +577,81 @@ abstract class AbstractTheme implements ThemeInterface
     protected function decorate($object, $decorator)
     {
         return new $decorator($object);
+    }
+
+    /**
+     * Return validator+filtered user input.
+     *
+     * Accepts multiple parameters for specific user input keys.
+     *
+     * @param string ...$keys
+     *
+     * @return mixed
+     * @access protected
+     */
+    protected function getInput()
+    {
+        $input = $this->input;
+
+        // If we were passed arguments, get the relevant keys (if they exist)
+        $keys = func_get_args();
+        if (count($keys)) {
+            foreach ($keys as $v) {
+                if (isset($input[$v])) {
+                    $input = $input[$v];
+                } else {
+                    return false;
+                }
+            }
+
+            return $input;
+        }
+
+        // Return the entire array
+        return $this->input;
+    }
+
+    /**
+     * set the user input
+     *
+     * Strips unexpected input, sanitizes and then filters. Stores result in
+     * $this->input, which can only be accessed through getInput() method.
+     *
+     * @param array $input
+     *
+     * @return self
+     * @access protected
+     */
+    protected function setInput($input)
+    {
+        // Give our validator some rules to work by.
+        $this->validator->validationRules($this->input_rules);
+        $this->validator->filterRules($this->input_filters);
+
+        // Strip unexpected keys/values,
+        $unsanitized_input = array();
+        foreach ($this->input_fields as $v) {
+            if (isset($input[$v])) {
+                $unsanitized_input[$v] = $input[$v];
+            }
+        }
+
+
+        if ($unsanitized_input) {
+            // Sanitize our data
+            $data = $this->validator->sanitize($unsanitized_input);
+        }
+
+        if ($data) {
+            // Filter and validate our data
+            $this->input = $this->validator->run($data);
+        }
+
+        // Check if it validated
+        if (!$this->input && count($unsanitized_input)) {
+            // @TODO check for errors and handle them...
+            echo $this->validator->getReadableErrors(true);
+            die();
+        }
     }
 }

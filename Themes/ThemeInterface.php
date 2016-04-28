@@ -16,6 +16,7 @@ namespace c24\Themes;
 
 use c24\Admin\Admin;
 use c24\Service\Api\Culture24\Api;
+use c24\Service\Validator\ValidatorInterface;
 
 /**
  * Interface ThemeInterface
@@ -29,7 +30,7 @@ use c24\Service\Api\Culture24\Api;
  */
 interface ThemeInterface
 {
-    public function __construct(Admin $admin, Api $api);
+    public function __construct(Admin $admin, Api $api, ValidatorInterface $validator);
 
     /**
      * getAdmin

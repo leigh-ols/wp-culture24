@@ -14,6 +14,8 @@
 
 namespace c24;
 
+use \GUMP as RealValidator;
+use c24\Service\Validator\GumpValidator as Validator;
 use c24\Service\Api\Culture24\Api as Culture24Api;
 use c24\Admin\Admin;
 
@@ -117,12 +119,14 @@ class WPCulture24
 
         // Create objects
         // $config = new \WordPressSettingsFramework
+        $real_validator = new RealValidator();
 
+        $this->services['Validator'] = new Validator($real_validator);
         $this->services['Culture24Api'] = new Culture24Api();
         $this->admin = new Admin();
 
         $theme_namespace = $this->admin->getTheme();
-        $this->theme = new $theme_namespace($this->admin, $this->getService('Culture24Api'));
+        $this->theme = new $theme_namespace($this->admin, $this->getService('Culture24Api'), $this->getService('Validator'));
 
         // Moved from culture24.php to prevent race hazard
         // @TODO functions.php should be a class we can instantiate

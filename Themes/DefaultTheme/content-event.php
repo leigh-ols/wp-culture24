@@ -20,7 +20,7 @@ if (strstr($c24img, 'thumb')) {
 
 $c24title = $c24event->get_name();
 //$c24url = $c24event->get_url();
-$c24url = "?c24event=".$c24event->get_event_id();
+$c24url = "?event=".$c24event->get_event_id();
 $c24venue = $c24event->get_venue_name();
 $c24type = $c24event->get_type();
 $c24location = $c24event->get_location_string();

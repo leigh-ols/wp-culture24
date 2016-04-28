@@ -1,0 +1,79 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "1644a27249d26570b48377eb317ef58e",
+    "content-hash": "a01b86dd955b46f2de3ba197d6afc10a",
+    "packages": [
+        {
+            "name": "wixel/gump",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Wixel/GUMP.git",
+                "reference": "b9bc4dda5ce787b91753b587b6bd72c80595c683"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Wixel/GUMP/zipball/b9bc4dda5ce787b91753b587b6bd72c80595c683",
+                "reference": "b9bc4dda5ce787b91753b587b6bd72c80595c683",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "gump.class.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Colleen Emryss",
+                    "homepage": "http://skitter.tv"
+                },
+                {
+                    "name": "Mark Slingsby",
+                    "homepage": "http://www.rsaweb.co.za"
+                },
+                {
+                    "name": "Roy de Kleijn",
+                    "homepage": "http://roydekleijn.com"
+                },
+                {
+                    "name": "Christian Klisch",
+                    "homepage": "http://www.christian-klisch.de/"
+                },
+                {
+                    "name": "Inge Brattaas",
+                    "homepage": "http://res.no/"
+                },
+                {
+                    "name": "Rob Crowe",
+                    "homepage": "http://vivalacrowe.com"
+                },
+                {
+                    "name": "Sean Nieuwoudt",
+                    "homepage": "https://wixelhq.com"
+                }
+            ],
+            "description": "A fast, extensible & stand-alone PHP input validation class that allows you to validate any data",
+            "homepage": "https://wixelhq.com/",
+            "time": "2015-09-02 07:46:46"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "wixel/gump": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
