@@ -633,6 +633,7 @@ abstract class AbstractTheme implements ThemeInterface
         }
 
 
+        $data = false;
         if ($unsanitized_input) {
             // Sanitize our data
             $data = $this->validator->sanitize($unsanitized_input);
