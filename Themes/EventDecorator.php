@@ -93,16 +93,13 @@ class EventDecorator extends AbstractRecordDecorator
     }
 
     /**
-     * @TODO we're using c24_format_dates here... consider where to put this
-     * function as it appears to be being used all over the place. Whos
-     * responsibility is it to format the dates?
      *
      * @return string
      */
     public function dates()
     {
         $result = '';
-        $dates = c24_format_dates($this->get_date_array(), 'd F Y');
+        $dates = $this->formatDates($this->get_date_array(), 'd F Y');
         for ($i = 0; $i < count($dates); $i++) {
             $result .= $dates[$i] . ($i < count($dates) - 1 ? '<br />' : '');
         }
