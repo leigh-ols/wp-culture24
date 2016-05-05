@@ -177,7 +177,7 @@ class Event extends AbstractRecord
     public function get_date_count()
     {
         $result = count($this->_record->instance);
-        if ($this->validate && !$result) {
+        if ($this->_validate && !$result) {
             $this->_validation_errors[] = 'missing: dates';
         }
         return $result;
@@ -190,7 +190,7 @@ class Event extends AbstractRecord
     public function get_date_array()
     {
         $result = $this->get_property('instance');
-        if ($this->validate && !$result) {
+        if ($this->_validate && !$result) {
             $this->_validation_errors[] = 'missing: dates';
         }
         return $result;
