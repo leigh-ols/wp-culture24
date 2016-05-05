@@ -46,13 +46,6 @@ class WPCulture24
     private $services;
 
     /**
-     * admin
-     *
-     * @var c24\Admin\Admin;
-     */
-    private $admin;
-
-    /**
      * __construct
      *
      * @return void
@@ -211,10 +204,20 @@ class WPCulture24
      */
     public function getAdmin()
     {
-        if (isset($this->admin)) {
-            return $this->admin;
-        }
+        return $this->getService('Admin');
+    }
 
-        return false;
+    /**
+     * setAdmin
+     *
+     * @param Admin $admin
+     *
+     * @return self
+     * @access public
+     */
+    public function setAdmin(Admin $admin)
+    {
+        $this->services['Admin'] = $admin;
+        return $this;
     }
 }
