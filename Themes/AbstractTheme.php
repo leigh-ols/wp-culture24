@@ -501,16 +501,16 @@ abstract class AbstractTheme implements ThemeInterface
     /**
      * decorateEvent
      *
-     * @TODO consider using a factory for this, as we shouldn't be 'newing'
-     * stuff here
+     * Accepts single event or array of.
+     * Decorates with Theme's EventDecorator, if that doesn't exist, decorates
+     * with c24\Themes\EventDecorator instead
      *
-     * @param mixed $event
+     * @param c24\Service\Api\Culture24\Event $event[]
      *
-     * @return void
-     * @throws [ExceptionClass] [Description]
-     * @access
+     * @return mixed Decorated event(s)
+     * @access protected
      */
-    protected function decorateEvents($events)
+    protected function decorateEvents($event)
     {
         $decorator_class = $this->admin->getThemeNamespace().'/EventDecorator';
         if (!class_exists($decorator_class)) {
@@ -533,16 +533,16 @@ abstract class AbstractTheme implements ThemeInterface
     /**
      * decorateVenue
      *
-     * @TODO consider using a factory for this, as we shouldn't be 'newing'
-     * stuff here
+     * Accepts single venue or array of.
+     * Decorates with Theme's VenueDecorator, if that doesn't exist, decorates
+     * with c24\Themes\VenueDecorator instead
      *
-     * @param mixed $venue
+     * @param c24\Service\Api\Culture24\Venue $venue[]
      *
-     * @return void
-     * @throws [ExceptionClass] [Description]
-     * @access
+     * @return mixed Decorate venue(s)
+     * @access protected
      */
-    protected function decorateVenues($venues)
+    protected function decorateVenues($venue)
     {
         $decorator_class = $this->admin->getThemeNamespace().'/VenueDecorator';
         if (!class_exists($decorator_class)) {
@@ -561,14 +561,13 @@ abstract class AbstractTheme implements ThemeInterface
     }
 
     /**
-     * decorate
+     * Decorate wrap a single object with another.
      *
-     * @param mixed $object
-     * @param mixed $decorator
+     * @param mixed $object Object to decorate
+     * @param string $decorator Namespace of the class to decorate with.
      *
-     * @return void
-     * @throws [ExceptionClass] [Description]
-     * @access
+     * @return $decorator
+     * @access protected
      */
     protected function decorate($object, $decorator)
     {
