@@ -80,8 +80,8 @@ abstract class AbstractTheme implements ThemeInterface
         'region'     => 'regex,/[ 0-9a-zA-Z\-\(\)]+/',
         'audience'   => 'regex,/[ 0-9a-zA-Z\-\(\)]+/',
         'type'       => 'regex,/[ 0-9a-zA-Z\-\(\)]+/',
-        'event'      => 'regex,/EVENT[0-9]{6}/',
-        'venue'      => 'regex,/[A-Z]{2}[0-9]{6}/'
+        'event'      => 'regex,/EVENT[0-9]+/',
+        'venue'      => 'regex,/[A-Z]{2}[0-9]+/'
     );
 
     /**
