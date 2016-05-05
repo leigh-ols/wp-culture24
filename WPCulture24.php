@@ -102,7 +102,7 @@ class WPCulture24
      * Create Objects
      * This looks complex, but there is no logic in here at all.
      * It is actually the entire plugin wiring all in one place.
-     * We can look at this to get an overview of the entire plugins structure,
+     * We can look at this to get an overview of the whole plugins structure,
      * And each components dependency tree.
      * It also has the advantage of making the plugin highly testable.
      *
@@ -118,52 +118,17 @@ class WPCulture24
         $_REQUEST = stripslashes_deep($_REQUEST);
 
         // Create objects
-        // $config = new \WordPressSettingsFramework
         $real_validator = new RealValidator();
 
-        $this->services['Validator'] = new Validator($real_validator);
-        $this->services['Culture24Api'] = new Culture24Api();
+        $this->setValidator(new Validator($real_validator));
+        $this->setApi(new Culture24Api());
         $this->admin = new Admin();
 
         $theme_namespace = $this->admin->getTheme();
-        $this->theme = new $theme_namespace($this->admin, $this->getService('Culture24Api'), $this->getService('Validator'));
-
-        // Moved from culture24.php to prevent race hazard
-        // @TODO functions.php should be a class we can instantiate
-        //require_once dirname(__FILE__) . '/themes/' . $this->admin->get_option('theme', 'default-theme') . '/functions.php';
+        $this->theme = new $theme_namespace($this->admin, $this->getApi(), $this->getValidator());
 
         // Hookable action
         do_action('wpculture24_init');
-    }
-
-    /**
-     * wpHead
-     *
-     * @return void
-     * @access public
-     */
-    public function wpHead()
-    {
-        // @TODO once config class is implemented, load JS config vars into a global JS var
-        return;
-        //$js_settings = $this->getConfig()->getModuleSettings('JS');
-        echo '<script>
-                var C24_CONFIG = JSON.parse(\''.json_encode($js_settings, JSON_HEX_APOS).'\');
-            </script>'."\r\n";
-    }
-
-    /**
-     * getConfig
-     * Allows access to this plugins config from outside of the plugin
-     * eg:
-     * $dams_settings = $__dams_connector->getConfig()->getAllSettings();
-     *
-     * @return \ol\dams\Service\Config\ConfigInterface
-     * @access public
-     */
-    public function getConfig()
-    {
-        return $this->config;
     }
 
     /**
@@ -180,7 +145,6 @@ class WPCulture24
         if (isset($this->services[$service])) {
             return $this->services[$service];
         }
-
         return false;
     }
 
@@ -195,6 +159,46 @@ class WPCulture24
     public function getApi()
     {
         return $this->getService('Culture24Api');
+    }
+
+    /**
+     * setApi
+     *
+     * @param Culture24Api $api
+     *
+     * @return self
+     * @access public
+     */
+    public function setApi(Culture24Api $api)
+    {
+        $this->services['Culture24Api'] = $api;
+        return $this;
+    }
+
+    /**
+     * getValidator
+     *
+     *
+     * @return Validator
+     * @access public
+     */
+    public function getValidator()
+    {
+        return $this->getService('Validator');
+    }
+
+    /**
+     * setValidator
+     *
+     * @param Validator $validator
+     *
+     * @return self
+     * @access public
+     */
+    public function setValidator(Validator $validator)
+    {
+        $this->services['Validator'] = $validator;
+        return $this;
     }
 
     /**
