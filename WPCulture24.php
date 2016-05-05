@@ -32,13 +32,6 @@ use c24\Admin\Admin;
 class WPCulture24
 {
     /**
-     * config
-     *
-     * @var mixed[]
-     */
-    private $config;
-
-    /**
      * services
      *
      * @var object[]
