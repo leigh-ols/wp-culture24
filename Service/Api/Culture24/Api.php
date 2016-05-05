@@ -204,8 +204,10 @@ class Api
      */
     public function setOptions($options)
     {
-        $this->set_elements($options['elements']);
-        unset($options['elements']);
+        if (isset($options['elements'])) {
+            $this->set_elements($options['elements']);
+            unset($options['elements']);
+        }
         foreach ($options as $key => $val) {
             $this->{'_' . $key} = trim($val);
         }
@@ -433,6 +435,7 @@ class Api
             $result = '&offset=' . $this->_offset;
             break;
         case 'tag':
+            $tags = '';
             if (!empty($this->_tag)) {
                 $tags = $this->_tag . ',';
             }
