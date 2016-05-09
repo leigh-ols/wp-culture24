@@ -20,9 +20,11 @@ use c24\Service\Api\Culture24\Event;
  * Class EventDecorator
  *
  * Themes will wrap c24\Service\Api\Culture24\Event objects in decorators that
- * either extend or decorate this class. Why decorate here? Firstly we don't
- * want to start messing with the base Culture24 Api class code. Secondly it
- * allows a little more flexibility.
+ * either extend or decorate this class.
+ * Why decorate here? Firstly we don't want to start messing with the base
+ * Culture24 Api class code. Secondly it allows users to create their own
+ * Decorators in their themes to modify the format/output of methods such as
+ * getAddress() summary() etc
  *
  * @category
  * @package

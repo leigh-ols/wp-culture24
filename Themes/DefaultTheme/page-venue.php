@@ -61,6 +61,7 @@ if (!$c24charges && !$c24venue->get_free()) {
             <h3 class="c24venue__heading">Upcoming Events</h3>
         </div>
         <?php //c24printevents($c24objects); ?>
+        <?php $this->includeThemeFile('content-event.php'); ?>
         <?php // @TODO We have an array of events... just need to display them ?>
     <?php endif; ?>
 </div>

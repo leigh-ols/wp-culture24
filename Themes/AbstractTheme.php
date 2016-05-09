@@ -510,7 +510,7 @@ abstract class AbstractTheme implements ThemeInterface
      * @return mixed Decorated event(s)
      * @access protected
      */
-    protected function decorateEvents($event)
+    protected function decorateEvents($events)
     {
         $decorator_class = $this->admin->getThemeNamespace().'/EventDecorator';
         if (!class_exists($decorator_class)) {
@@ -542,7 +542,7 @@ abstract class AbstractTheme implements ThemeInterface
      * @return mixed Decorate venue(s)
      * @access protected
      */
-    protected function decorateVenues($venue)
+    protected function decorateVenues($venues)
     {
         $decorator_class = $this->admin->getThemeNamespace().'/VenueDecorator';
         if (!class_exists($decorator_class)) {
