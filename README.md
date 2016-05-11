@@ -31,6 +31,16 @@ The plugin provides admin pages for testing and building queries
 
 Sample implementation code can be found in the wp-content/plugins/culture24/theme folder
 
+### Custom Themes
+
+You can create a custom theme by creating a new directory and class, eg:
+Themes/NewNameTheme/NewNameTheme.php
+This class should extend AbstractTheme.
+From here you can copy or re-write the template files from the DefaultTheme.
+You can also create 'EventDecorator.php' and 'VenueDecorator.php' in your theme 
+folder, these will be loaded instead of the decorators inside the Themes 
+directory. These can be used to alter the output of methods like 
+$event->getDates() to your prefered markup/format.
 
 ### Links
 
@@ -63,12 +73,4 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-### LB @TODO
-Make new Admin extend AbstractTheme, move theme specific functions from Admin 
-to AbstractTheme, so functions can be used in Front end Themes.
-Ensure Admin does not show up as front end theme (front end disabled property?)
-Generally tidy up the code
-Clear out superfluous culture24.admin.*.php files
-Allow use of custom themes with option in admin for which theme to use
 

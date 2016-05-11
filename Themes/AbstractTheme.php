@@ -374,8 +374,6 @@ abstract class AbstractTheme implements ThemeInterface
      * Set up our Api object's options for a listing based on our plugin options
      * and our search form's $_POST values
      *
-     * @TODO Remove hard coded tags
-     *
      * @return Api
      */
     protected function setupListingApi($options = array())
@@ -466,9 +464,6 @@ abstract class AbstractTheme implements ThemeInterface
      *
      * Example usage:
      * echo $this->pager($c24obj->get_found(), $_POST['limit']);
-     *
-     * @TODO Consider removing this, If the user doesn't want WordPress' pagination they
-     * should use a plugin. (Dependant on if we keep pages as shortcodes)
      *
      * @param type $total_items
      * @param type $per_page
