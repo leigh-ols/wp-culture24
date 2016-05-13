@@ -17,6 +17,7 @@ namespace c24;
 use \GUMP as RealValidator;
 use c24\Service\Validator\GumpValidator as Validator;
 use c24\Service\Api\Culture24\Api as Culture24Api;
+use c24\Service\Settings\WPSettings as Settings;
 use c24\Admin\Admin;
 
 /**
@@ -108,10 +109,20 @@ class WPCulture24
 
         $this->setValidator(new Validator($real_validator));
         $this->setApi(new Culture24Api());
-        $this->admin = new Admin();
+        $this->setSettings(new Settings());
 
-        $theme_namespace = $this->admin->getCurrentTheme();
-        $this->theme = new $theme_namespace($this->admin, $this->getApi(), $this->getValidator());
+        $this->setAdmin(
+            new Admin(
+                $this->getSettings()
+            )
+        );
+
+        $theme_namespace = $this->getSettings()->getCurrentTheme();
+        $this->theme = new $theme_namespace(
+            $this->getSettings(),
+            $this->getApi(),
+            $this->getValidator()
+        );
 
         // Hookable action
         do_action('wpculture24_init');
@@ -211,6 +222,33 @@ class WPCulture24
     public function setAdmin(Admin $admin)
     {
         $this->services['Admin'] = $admin;
+        return $this;
+    }
+
+    /**
+     * getSettings
+     * Allows retrieval of Settings class. Really a temporary function to keep
+     * legacy code functional during plugin refactor.
+     *
+     * @return c24\Settings\SettingsInterface
+     * @access public
+     */
+    public function getSettings()
+    {
+        return $this->getService('Settings');
+    }
+
+    /**
+     * setSettings
+     *
+     * @param Settings $admin
+     *
+     * @return self
+     * @access public
+     */
+    public function setSettings(Settings $admin)
+    {
+        $this->services['Settings'] = $admin;
         return $this;
     }
 }

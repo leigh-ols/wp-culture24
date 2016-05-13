@@ -14,6 +14,8 @@
 
 namespace c24\Admin;
 
+use c24\Service\Settings\SettingsInterface;
+
 /**
  * Handle all things admin
  *
@@ -39,11 +41,18 @@ class Admin
     protected $theme_root_namespace = '\c24\Themes';
 
     /**
+     * settings
+     *
+     * @var SettingsInterface
+     */
+    protected $settings;
+
+    /**
      * settings field keys
      *
      * @var array
      */
-    public $settings = array('theme', 'url', 'version', 'key', 'tag_text', 'tag_exact', 'epp', 'vfp', 'vpp');
+    public $settings_fields = array('theme', 'url', 'version', 'key', 'tag_text', 'tag_exact', 'epp', 'vfp', 'vpp');
 
     /**
      * Settings field keys are prefixed with this string
@@ -59,8 +68,10 @@ class Admin
      * @return void
      * @access public
      */
-    public function __construct()
+    public function __construct(SettingsInterface $settings)
     {
+        $this->settings = $settings;
+
         if (is_admin()) {
             add_action('admin_menu', array($this, 'adminMenu'));
             add_action('admin_init', array($this, 'adminInit'));
@@ -213,7 +224,7 @@ class Admin
      */
     public function createFieldTheme()
     {
-        $current_theme = $this->getOption('theme', $this->fallback_theme);
+        $current_theme = $this->settings->getSetting('theme', $this->fallback_theme);
         $theme_paths = glob(CULTURE24__CONNECTOR_PATH . '/Themes/*', GLOB_ONLYDIR);
 
         $themes = array();
@@ -245,7 +256,7 @@ class Admin
     public function createFieldUrl()
     {
         ?>
-            <input type="text" id="input_c24api_url" name="c24[url]" value="<?php echo $this->getOption('url', 'http://www.culture24.org.uk/api/rest/v');
+            <input type="text" id="input_c24api_url" name="c24[url]" value="<?php echo $this->settings->getSetting('url', 'http://www.culture24.org.uk/api/rest/v');
         ?>" size="128" />
         <?php
 
@@ -262,7 +273,7 @@ class Admin
     public function createFieldVersion()
     {
         ?>
-            <input type="text" id="input_c24api_version" name="c24[version]" value="<?php echo $this->getOption('version', '1');
+            <input type="text" id="input_c24api_version" name="c24[version]" value="<?php echo $this->settings->getSetting('version', '1');
         ?>" size="2" />
         <?php
 
@@ -279,7 +290,7 @@ class Admin
     public function createFieldKey()
     {
         ?>
-            <input type="text" id="input_c24api_key" name="c24[key]" value="<?php echo $this->getOption('key', '');
+            <input type="text" id="input_c24api_key" name="c24[key]" value="<?php echo $this->settings->getSetting('key', '');
         ?>" size="32" />
         <?php
 
@@ -296,7 +307,7 @@ class Admin
     public function createFieldTagText()
     {
         ?>
-            <input type="text" id="input_c24api_tag_text" name="c24[tag_text]" value="<?php echo $this->getOption('tag_text', '');
+            <input type="text" id="input_c24api_tag_text" name="c24[tag_text]" value="<?php echo $this->settings->getSetting('tag_text', '');
         ?>" size="128" />
         <?php
 
@@ -313,7 +324,7 @@ class Admin
     public function createFieldTagExact()
     {
         ?>
-            <input type="text" id="input_c24api_tag_exact" name="c24[tag_exact]" value="<?php echo $this->getOption('tag_exact', '');
+            <input type="text" id="input_c24api_tag_exact" name="c24[tag_exact]" value="<?php echo $this->settings->getSetting('tag_exact', '');
         ?>" size="128" />
         <?php
 
@@ -330,7 +341,7 @@ class Admin
     public function createFieldVenueId()
     {
         ?>
-            <input type="text" id="input_c24api_venue_id" name="c24[venue_id]" value="<?php echo $this->getOption('venue_id', '');
+            <input type="text" id="input_c24api_venue_id" name="c24[venue_id]" value="<?php echo $this->settings->getSetting('venue_id', '');
         ?>" size="128" />
         <?php
 
@@ -347,7 +358,7 @@ class Admin
     public function createFieldEpp()
     {
         ?>
-            <input type="text" id="input_c24api_epp" name="c24[epp]" value="<?php echo $this->getOption('epp', '10');
+            <input type="text" id="input_c24api_epp" name="c24[epp]" value="<?php echo $this->settings->getSetting('epp', '10');
         ?>" size="2" />
         <?php
 
@@ -364,7 +375,7 @@ class Admin
     public function createFieldEfp()
     {
         ?>
-            <input type="text" id="input_c24api_efp" name="c24[efp]" value="<?php echo $this->getOption('efp', '');
+            <input type="text" id="input_c24api_efp" name="c24[efp]" value="<?php echo $this->settings->getSetting('efp', '');
         ?>" size="8" />
         <?php
 
@@ -381,7 +392,7 @@ class Admin
     public function createFieldVpp()
     {
         ?>
-            <input type="text" id="input_c24api_vpp" name="c24[vpp]" value="<?php echo $this->getOption('vpp', '25');
+            <input type="text" id="input_c24api_vpp" name="c24[vpp]" value="<?php echo $this->settings->getSetting('vpp', '25');
         ?>" size="2" />
         <?php
 
@@ -415,122 +426,13 @@ class Admin
     public function saveSettings($input)
     {
         // Loop through each of our settings and store the values
-        foreach ($this->settings as $v) {
+        foreach ($this->settings_fields as $v) {
             if (isset($input[$v])) {
-                if ($this->getOption($v) === false) {
-                    $this->addOption($v, $input[$v]);
-                } else {
-                    $this->updateOption($v, $input[$v]);
-                }
+                $this->settings->setSetting($v, $input[$v]);
             }
         }
 
         return $input;
-    }
-
-    /**
-     * getOption
-     *
-     * Retrieves a setting/option from WordPress automatically adding $this->settings_prefix
-     *
-     * @param string $option Option key (not including $this->settings_prefix)
-     * @param mixed $default (optional)
-     *
-     * @return mixed
-     * @access public
-     */
-    public function getOption($option, $default=null)
-    {
-        return get_option($this->settings_prefix . $option, $default);
-    }
-
-    /**
-     * addOption
-     *
-     * Wrapper for add_option, automatically adds 'settings_prefix'.
-     *
-     * @param string $option
-     * @param mixed $value
-     *
-     * @return boolean (success)
-     * @access public
-     */
-    public function addOption($option, $value)
-    {
-        return add_option($this->settings_prefix . $option, $value);
-    }
-
-    /**
-     * updateOption
-     *
-     * Wrapper for WordPress update_option function. Automatically adds
-     * 'settings_prefix'.
-     *
-     * @param string $option
-     * @param mixed $value
-     *
-     * @return bool (true if changed, false if fail or not changed)
-     * @access public
-     */
-    public function updateOption($option, $value)
-    {
-        return update_option($this->settings_prefix . $option, $value);
-    }
-
-    /**
-     * getCurrentTheme
-     *
-     * Gets current theme setting, falls back to default if Theme is missing.
-     *
-     * @return string
-     * @access public
-     */
-    public function getCurrentTheme()
-    {
-        $theme = $this->getOption('theme', $this->fallback_theme);
-        $theme_namespace = $this->theme_root_namespace.'\\'.$theme.'\\'.$theme;
-        if (!class_exists($theme_namespace)) {
-
-            // DEBUG
-            echo "\r\n<pre><!-- \r\n";
-            $DBG_DBG = debug_backtrace();
-            foreach ($DBG_DBG as $DD) {
-                echo implode(':', array(@$DD['file'], @$DD['line'], @$DD['function'])) . "\r\n";
-            }
-            echo " -->\r\n";
-            var_dump($theme_namespace);
-            echo "</pre>\r\n";
-
-            // @TODO add some sort of admin alert here
-            $theme = $this->fallback_theme;
-            update_option($this->settings_prefix . 'theme', $theme);
-            $theme_namespace = $this->theme_root_namespace.'\\'.$theme.'\\'.$theme;
-        }
-        return $theme_namespace;
-    }
-
-    /**
-     * getThemeNamespace
-     *
-     * Return the namespace to the current Theme without the final theme class.
-     *
-     * @return string
-     * @access public
-     */
-    public function getThemeNamespace()
-    {
-        // Get the Theme
-        $theme = $this->getCurrentTheme();
-
-        // Remove the Theme Class name from the theme to return just the
-        // namespace
-        // c24\Themes\DefaultTheme\DefaultTheme
-        // becomes:
-        // c24\Themes\DefaultTheme
-        $theme_namespaces = explode('\\', $theme);
-        array_pop($theme_namespaces);
-        $theme_namespace = implode('\\', $theme_namespaces);
-        return $theme_namespace;
     }
 
     /**

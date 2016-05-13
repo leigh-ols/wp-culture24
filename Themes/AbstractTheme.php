@@ -14,7 +14,7 @@
 
 namespace c24\Themes;
 
-use c24\Admin\Admin;
+use c24\Service\Settings\SettingsInterface;
 use c24\Service\Api\Culture24\Api as Api;
 use c24\Service\Validator\ValidatorInterface;
 
@@ -31,11 +31,11 @@ use c24\Service\Validator\ValidatorInterface;
 abstract class AbstractTheme implements ThemeInterface
 {
     /**
-     * We use the admin class to retrieve settings from WP
+     * We use the settings class to retrieve settings from WP
      *
-     * @var Admin
+     * @var SettingsInterface
      */
-    private $admin;
+    private $settings;
 
     /**
      * api
@@ -109,16 +109,16 @@ abstract class AbstractTheme implements ThemeInterface
     /**
      * __construct
      *
-     * @param Admin $admin
+     * @param SettingsInterface $settings
      * @param Api $api
      * @param ValidatorInterface $validator
      *
      * @return void
      * @access public
      */
-    public function __construct(Admin $admin, Api $api, ValidatorInterface $validator)
+    public function __construct(SettingsInterface $settings, Api $api, ValidatorInterface $validator)
     {
-        $this->admin = $admin;
+        $this->settings = $settings;
         $this->api = $api;
         $this->validator = $validator;
 
@@ -132,31 +132,6 @@ abstract class AbstractTheme implements ThemeInterface
         add_shortcode('c24page', array($this, 'shortcode'));
         // @NOTE Race hazard.... WPCulture24 class fires on init...
         add_filter('init', array($this, 'feedHook'));
-    }
-
-    /**
-     * getAdmin
-     *
-     * @return Admin
-     * @access public
-     */
-    public function getAdmin()
-    {
-        return $this->admin;
-    }
-
-    /**
-     * setAdmin
-     *
-     * @param Admin $admin
-     *
-     * @return self
-     * @access public
-     */
-    public function setAdmin(Admin $admin)
-    {
-        $this->admin = $admin;
-        return $this;
     }
 
     /**
@@ -311,7 +286,7 @@ abstract class AbstractTheme implements ThemeInterface
     public function displayListing()
     {
         $obj = $this->setupListingApi();
-        $c24perpage = $this->getAdmin()->getOption('epp');
+        $c24perpage = $this->settings->getSetting('epp');
         $c24objects = array();
         $c24error = $c24debug = false;
         $date_start = $date_end = '';
@@ -379,9 +354,9 @@ abstract class AbstractTheme implements ThemeInterface
     protected function setupListingApi($options = array())
     {
         global $paged;
-        $limit = $this->getAdmin()->getOption('epp');
-        $tag_exact = $this->getAdmin()->getOption('tag_exact');
-        $tag_text = $this->getAdmin()->getOption('tag_text');
+        $limit = $this->settings->getSetting('epp');
+        $tag_exact = $this->settings->getSetting('tag_exact');
+        $tag_text = $this->settings->getSetting('tag_text');
         $offset = 0;
 
         if ($paged) {
@@ -507,7 +482,7 @@ abstract class AbstractTheme implements ThemeInterface
      */
     protected function decorateEvents($events)
     {
-        $decorator_class = $this->admin->getThemeNamespace().'/EventDecorator';
+        $decorator_class = $this->settings->getCurrentThemeNamespace().'/EventDecorator';
         if (!class_exists($decorator_class)) {
             $decorator_class = '\c24\Themes\EventDecorator';
         }
@@ -539,7 +514,7 @@ abstract class AbstractTheme implements ThemeInterface
      */
     protected function decorateVenues($venues)
     {
-        $decorator_class = $this->admin->getThemeNamespace().'/VenueDecorator';
+        $decorator_class = $this->settings->getCurrentThemeNamespace().'/VenueDecorator';
         if (!class_exists($decorator_class)) {
             $decorator_class = '\c24\Themes\VenueDecorator';
         }
