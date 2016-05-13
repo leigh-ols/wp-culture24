@@ -478,14 +478,14 @@ class Admin
     }
 
     /**
-     * getTheme
+     * getCurrentTheme
      *
      * Gets current theme setting, falls back to default if Theme is missing.
      *
      * @return string
      * @access public
      */
-    public function getTheme()
+    public function getCurrentTheme()
     {
         $theme = $this->getOption('theme', $this->fallback_theme);
         $theme_namespace = $this->theme_root_namespace.'\\'.$theme.'\\'.$theme;
@@ -512,7 +512,7 @@ class Admin
     /**
      * getThemeNamespace
      *
-     * Return the namespace to the current Theme
+     * Return the namespace to the current Theme without the final theme class.
      *
      * @return string
      * @access public
@@ -520,13 +520,13 @@ class Admin
     public function getThemeNamespace()
     {
         // Get the Theme
-        $theme = $this->getTheme();
+        $theme = $this->getCurrentTheme();
 
         // Remove the Theme Class name from the theme to return just the
         // namespace
         // c24\Themes\DefaultTheme\DefaultTheme
         // becomes:
-        // c24\ThemesDefaultTheme
+        // c24\Themes\DefaultTheme
         $theme_namespaces = explode('\\', $theme);
         array_pop($theme_namespaces);
         $theme_namespace = implode('\\', $theme_namespaces);

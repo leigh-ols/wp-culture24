@@ -110,7 +110,7 @@ class WPCulture24
         $this->setApi(new Culture24Api());
         $this->admin = new Admin();
 
-        $theme_namespace = $this->admin->getTheme();
+        $theme_namespace = $this->admin->getCurrentTheme();
         $this->theme = new $theme_namespace($this->admin, $this->getApi(), $this->getValidator());
 
         // Hookable action
