@@ -20,14 +20,9 @@ use c24\Themes\ThemeInterface;
 /**
  * Handle all things admin
  *
- * This class handles saving (and retrieval) of settings from WordPress, as
- * well as the rendering of the settings pages. A copy of this class is passed
- * to the front end Theme so it can quickly retrieve settings also.
- * At present this class has a functions-c24.php, which contains many of the
- * same functions as AbstractTheme. This duplication of code is not a good
- * idea. On the other hand we don't want to merge the two and end up with a
- * 'Super Class' with way too many responsibilities.
- * I'll have a think - 20160422 - LB
+ * @TODO remove functions-c24.php and instead use functions from our
+ * $current_theme property (which contains a ThemeInterface of the currently
+ * selected Theme).
  *
  * @category
  * @package
