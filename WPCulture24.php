@@ -18,6 +18,7 @@ use \GUMP as RealValidator;
 use c24\Service\Validator\GumpValidator as Validator;
 use c24\Service\Api\Culture24\Api as Culture24Api;
 use c24\Service\Settings\WPSettings as Settings;
+use c24\Themes\ThemeInterface as Theme;
 use c24\Admin\Admin;
 
 /**
@@ -111,17 +112,20 @@ class WPCulture24
         $this->setApi(new Culture24Api());
         $this->setSettings(new Settings());
 
-        $this->setAdmin(
-            new Admin(
-                $this->getSettings()
+        $theme_namespace = $this->getSettings()->getCurrentTheme();
+        $this->setTheme(
+            new $theme_namespace(
+                $this->getSettings(),
+                $this->getApi(),
+                $this->getValidator()
             )
         );
 
-        $theme_namespace = $this->getSettings()->getCurrentTheme();
-        $this->theme = new $theme_namespace(
-            $this->getSettings(),
-            $this->getApi(),
-            $this->getValidator()
+        $this->setAdmin(
+            new Admin(
+                $this->getSettings(),
+                $this->getTheme()
+            )
         );
 
         // Hookable action
@@ -249,6 +253,33 @@ class WPCulture24
     public function setSettings(Settings $admin)
     {
         $this->services['Settings'] = $admin;
+        return $this;
+    }
+
+    /**
+     * getTheme
+     * Allows retrieval of Theme class. Really a temporary function to keep
+     * legacy code functional during plugin refactor.
+     *
+     * @return c24\Theme\ThemeInterface
+     * @access public
+     */
+    public function getTheme()
+    {
+        return $this->getService('Theme');
+    }
+
+    /**
+     * setTheme
+     *
+     * @param Theme $admin
+     *
+     * @return self
+     * @access public
+     */
+    public function setTheme(Theme $admin)
+    {
+        $this->services['Theme'] = $admin;
         return $this;
     }
 }

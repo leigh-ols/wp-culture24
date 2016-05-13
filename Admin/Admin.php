@@ -15,6 +15,7 @@
 namespace c24\Admin;
 
 use c24\Service\Settings\SettingsInterface;
+use c24\Themes\ThemeInterface;
 
 /**
  * Handle all things admin
@@ -48,6 +49,13 @@ class Admin
     protected $settings;
 
     /**
+     * current_theme
+     *
+     * @var ThemeInterface
+     */
+    protected $current_theme;
+
+    /**
      * settings field keys
      *
      * @var array
@@ -68,9 +76,10 @@ class Admin
      * @return void
      * @access public
      */
-    public function __construct(SettingsInterface $settings)
+    public function __construct(SettingsInterface $settings, ThemeInterface $current_theme)
     {
         $this->settings = $settings;
+        $this->current_theme = $current_theme;
 
         if (is_admin()) {
             add_action('admin_menu', array($this, 'adminMenu'));
