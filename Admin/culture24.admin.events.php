@@ -1,15 +1,15 @@
 <?php
 namespace c24;
 
-global $__c24, $c24objects, $c24pager, $c24error, $c24debug;
+global $c24objects, $c24error, $c24debug;
 
 $c24objects = array();
 $c24pager = '';
 $c24error = $c24debug = false;
 $date_start = $date_end = '';
-$c24regions = $__c24->getApi()->getRegions();
-$c24audiences = $__c24->getApi()->getAudiences();
-$c24types = $__c24->getApi()->getTypes();
+$c24regions = $api->getRegions();
+$c24audiences = $api->getAudiences();
+$c24types = $api->getTypes();
 
 if (isset($_POST['c24'])) {
     if (!wp_verify_nonce($_POST['c24'], 'c24-test')) {
@@ -33,7 +33,7 @@ if (isset($_POST['c24'])) {
         'type' => $_POST['type'],
         'sort' => 'date',
     );
-    $obj = $__c24->getService('Culture24Api')->setOptions($options);
+    $obj = $api->setOptions($options);
 
     if ($obj->requestSet()) {
         $c24objects = $obj->get_objects();

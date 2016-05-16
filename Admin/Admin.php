@@ -101,6 +101,27 @@ class Admin
     }
 
     /**
+     * includeAdminFile
+     *
+     * @param string $file
+     *
+     * @return self
+     * @access protected
+     */
+    protected function includeAdminFile($file, $vars = array())
+    {
+        // Make vars available to template file
+        //$vars['input'] = $this->getInput();
+        $vars['api'] = $this->current_theme->getApi();
+        foreach ($vars as $k => $v) {
+            ${$k} = $v;
+        }
+
+        include $file;
+        return $this;
+    }
+
+    /**
      * adminOptions
      *
      * Main options page
@@ -110,7 +131,7 @@ class Admin
      */
     public function adminOptions()
     {
-        include('culture24.admin.php');
+        $this->includeAdminFile('culture24.admin.php');
     }
 
     /**
@@ -123,7 +144,7 @@ class Admin
      */
     public function adminDates()
     {
-        include('culture24.admin.dates.php');
+        $this->includeAdminFile('culture24.admin.dates.php');
     }
 
     /**
@@ -136,7 +157,7 @@ class Admin
      */
     public function adminHtml()
     {
-        include('culture24.admin.html.php');
+        $this->includeAdminFile('culture24.admin.html.php');
     }
 
     /**
@@ -149,7 +170,7 @@ class Admin
      */
     public function adminEvents()
     {
-        include('culture24.admin.events.php');
+        $this->includeAdminFile('culture24.admin.events.php');
     }
 
     /**
@@ -162,7 +183,7 @@ class Admin
      */
     public function adminVenues()
     {
-        include('culture24.admin.venues.php');
+        $this->includeAdminFile('culture24.admin.venues.php');
     }
 
     /**
@@ -464,6 +485,8 @@ class Admin
 
     /**
      * Format dates
+     * We should be using the current_themes event decorator formatDates
+     * here,.. but at present there's no good way of doing this :/
      *
      * @param array $date_array
      *

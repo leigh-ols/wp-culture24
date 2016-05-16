@@ -1,10 +1,10 @@
 <?php
-global $__c24,$c24objects, $c24pager, $c24error, $c24debug;
+global $c24objects, $c24pager, $c24error, $c24debug;
 
 $c24objects = array();
 $c24pager = '';
 $c24error = $c24debug = false;
-$c24regions = $__c24->getApi()->getRegions();
+$c24regions = $api->getRegions();
 
 if (isset($_POST['c24'])) {
     if (!wp_verify_nonce($_POST['c24'], 'c24-test')) {
@@ -26,8 +26,8 @@ if (isset($_POST['c24'])) {
         'region' => $_POST['region'],
         'sort' => 'name',
     );
-    // Temporary until we can inject this object
-    $obj = $__c24->getService('Culture24Api')->setOptions($options);
+
+    $obj = $api->setOptions($options);
 
     if ($obj->requestSet()) {
         $c24objects = $obj->get_objects();
