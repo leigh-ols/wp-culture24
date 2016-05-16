@@ -22,6 +22,10 @@ If you wish to try the supplied map code put [gmap3.js](https://github.com/jbdem
 
 Clone or extract the files to wp-content/plugins/wp-culture24
 
+Run "$ composer install" from the plugin directory.
+
+If using a theme other than 'DefaultTheme' copy it into the Themes/ directory.
+
 Enable the plugin via the admin control panel
 
 Enter your API key via the wp-admin/culture24/settings page
