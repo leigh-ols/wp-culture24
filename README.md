@@ -1,4 +1,5 @@
 # Culture24 API Plugin for WordPress
+## Modified and Refactored by Leigh Bicknell - Orangeleaf Systems Ltd
 
 ## Imperial War Museums :: New Media Dept
 
