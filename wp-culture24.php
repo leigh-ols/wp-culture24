@@ -35,5 +35,6 @@ define('C24_SLUG', 'events');
 // Composer PSR-4 auto-loader
 require __DIR__ . '/vendor/autoload.php';
 
+global $__c24;
 $__c24 = new WPCulture24();
-
+do_action('wpculture24_loaded');
