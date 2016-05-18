@@ -35,7 +35,7 @@ abstract class AbstractTheme implements ThemeInterface
      *
      * @var SettingsInterface
      */
-    private $settings;
+    protected $settings;
 
     /**
      * api
@@ -44,7 +44,7 @@ abstract class AbstractTheme implements ThemeInterface
      *
      * @var Api
      */
-    private $api;
+    protected $api;
 
     /**
      * theme_path
@@ -52,7 +52,7 @@ abstract class AbstractTheme implements ThemeInterface
      *
      * @var string
      */
-    private $theme_path;
+    protected $theme_path;
 
     /**
      * Array of user input field keys accepted by this class
@@ -97,6 +97,15 @@ abstract class AbstractTheme implements ThemeInterface
         'type'       => 'trim|sanitize_string'
     );
 
+    /**
+     * sanitize_input
+     *
+     * Should we sanitize all user input?
+     * Turning this on prevents input of arrays.
+     *
+     * @var mixed
+     */
+    protected $sanitize_input = true;
 
     /**
      * Stores user input. Must be set and accessed through setInput() to ensure
@@ -603,9 +612,12 @@ abstract class AbstractTheme implements ThemeInterface
 
 
         $data = false;
-        if ($unsanitized_input) {
+
+        if ($unsanitized_input && $this->sanitize_input) {
             // Sanitize our data
             $data = $this->validator->sanitize($unsanitized_input);
+        } else {
+            $data = $unsanitized_input;
         }
 
         if ($data) {

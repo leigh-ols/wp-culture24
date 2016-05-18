@@ -31,7 +31,7 @@ use c24\Themes\ThemeInterface;
  * @license    Copyright Orangeleaf Systems Ltd 2013
  * @link       http://orangeleaf.com
  */
-class Admin
+class Admin extends AbstractAdmin
 {
     protected $fallback_theme = 'DefaultTheme';
     protected $theme_root_namespace = '\c24\Themes';
@@ -56,13 +56,6 @@ class Admin
      * @var array
      */
     public $settings_fields = array('theme', 'url', 'version', 'key', 'tag_text', 'tag_exact', 'epp', 'vfp', 'vpp');
-
-    /**
-     * Settings field keys are prefixed with this string
-     *
-     * @var string
-     */
-    public $settings_prefix = 'c24api_';
 
     /**
      * __construct
@@ -98,27 +91,6 @@ class Admin
         add_submenu_page('culture24', 'Venues', 'Venues', 'manage_options', 'venues', array($this, 'adminVenues'));
         add_submenu_page('culture24', 'HTML', 'HTML', 'manage_options', 'html', array($this, 'adminHtml'));
         add_submenu_page('culture24', 'Dates', 'Dates', 'manage_options', 'dates', array($this, 'adminDates'));
-    }
-
-    /**
-     * includeAdminFile
-     *
-     * @param string $file
-     *
-     * @return self
-     * @access protected
-     */
-    protected function includeAdminFile($file, $vars = array())
-    {
-        // Make vars available to template file
-        //$vars['input'] = $this->getInput();
-        $vars['api'] = $this->current_theme->getApi();
-        foreach ($vars as $k => $v) {
-            ${$k} = $v;
-        }
-
-        include $file;
-        return $this;
     }
 
     /**
@@ -436,28 +408,6 @@ class Admin
     {
         print 'Use shortcode [c24page]. Default tag(s) to filter all searchs. Leave blank, enter one word/phrase
             or comma delimited list of words/phrases.';
-    }
-
-    /**
-     * saveSettings
-     *
-     * Called by WordPress when user clicks 'Save Changes' button in Dashboard
-     *
-     * @param mixed $input
-     *
-     * @return void
-     * @access public
-     */
-    public function saveSettings($input)
-    {
-        // Loop through each of our settings and store the values
-        foreach ($this->settings_fields as $v) {
-            if (isset($input[$v])) {
-                $this->settings->setSetting($v, $input[$v]);
-            }
-        }
-
-        return $input;
     }
 
     /**

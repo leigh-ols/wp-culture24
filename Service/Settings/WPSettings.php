@@ -37,6 +37,34 @@ class WPSettings implements SettingsInterface
     protected $theme_root_namespace = '\c24\Themes';
 
     /**
+     * setThemeNamespace
+     *
+     * @param string $namespace
+     *
+     * @return self
+     * @access public
+     */
+    public function setThemeNamespace($namespace)
+    {
+        $this->theme_root_namespace = $namespace;
+        return $this;
+    }
+
+    /**
+     * setPrefix
+     *
+     * @param string $prefix
+     *
+     * @return self
+     * @access public
+     */
+    public function setPrefix($prefix)
+    {
+        $this->settings_prefix = $prefix;
+        return $this;
+    }
+
+    /**
      * setSetting
      *
      * Wrapper for WordPress update_option function. Automatically adds

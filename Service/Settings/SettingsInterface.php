@@ -70,5 +70,17 @@ interface SettingsInterface
      * @access public
      */
     public function getCurrentThemeNamespace();
+
+    /**
+     * setPrefix
+     *
+     * Set the settings prefix
+     *
+     * @param string $prefix
+     *
+     * @return self
+     * @access public
+     */
+    public function setPrefix($prefix);
 }
 

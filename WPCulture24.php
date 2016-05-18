@@ -69,7 +69,7 @@ class WPCulture24
      */
     public function enqueueScripts()
     {
-        wp_register_script('c24', __DIR__.'/assets/js/wp-culture24.js', array('jquery', 'jquery-ui-datepicker'));
+        wp_register_script('c24', plugins_url('/assets/js/wp-culture24.js', __DIR__.'/wp-culture24'), array('jquery', 'jquery-ui-datepicker'));
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_script('c24');
     }
@@ -254,6 +254,19 @@ class WPCulture24
     {
         $this->services['Settings'] = $admin;
         return $this;
+    }
+
+    /**
+     * createSettings
+     *
+     * This is used for addons such as wp-culture24-tickets plugin.
+     *
+     * @return Settings
+     * @access public
+     */
+    public function createSettings()
+    {
+        return new Settings();
     }
 
     /**
