@@ -344,8 +344,8 @@ abstract class AbstractTheme implements ThemeInterface
                     <?php echo $this->pager($obj->get_found(), $c24perpage); ?>
                 </div>
                 <div class="c24__logoc">
-                    <img class="c24__logo" alt="Culture 24" src="/wp-content/plugins/wp-culture24/themes/default-theme/culture24-logo.png">
-                    <p class="c24__logotext">Culture24 is the cultural data provider for the First World War Centenary Programme events calendar.</p>
+                    <img class="c24__logo" alt="Culture 24" src="/wp-content/plugins/wp-culture24/Themes/DefaultTheme/culture24-logo.png">
+                    <p class="c24__logotext">Culture24 is our events data provider.</p>
                 </div>
             </div>
         <?php
