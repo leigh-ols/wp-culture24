@@ -50,8 +50,8 @@ class WPCulture24
     {
         add_action('wp_enqueue_scripts', array($this, 'enqueueScripts'), 99);
         add_action('admin_enqueue_scripts', array($this, 'enqueueAdminScripts'), 99);
-        add_action('wp_head', array($this, 'wpHead'));
-        add_action('admin_head', array($this, 'wpHead'));
+        //add_action('wp_head', array($this, 'wpHead'));
+        //add_action('admin_head', array($this, 'wpHead'));
 
         // Init plugin after all other plugins
         //add_action('init', array($this, 'init'), 11);
