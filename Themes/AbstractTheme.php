@@ -366,6 +366,8 @@ abstract class AbstractTheme implements ThemeInterface
         $limit = $this->settings->getSetting('epp');
         $tag_exact = $this->settings->getSetting('tag_exact');
         $tag_text = $this->settings->getSetting('tag_text');
+        $venue_id = $this->settings->getSetting('venue_id');
+        $user_id = $this->settings->getSetting('user_id');
         $offset = 0;
 
         if ($paged) {
@@ -383,6 +385,8 @@ abstract class AbstractTheme implements ThemeInterface
             //'keywords' => @$_GET['keywords'],
             //'keyfield' => @$_GET['keyfield'],
             'sort'       => 'date',
+            'venueID'    => $venue_id,
+            'userID'     => $user_id
         );
         $options_input = $this->getInput();
 

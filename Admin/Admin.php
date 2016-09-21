@@ -55,7 +55,7 @@ class Admin extends AbstractAdmin
      *
      * @var array
      */
-    public $settings_fields = array('theme', 'url', 'version', 'key', 'tag_text', 'tag_exact', 'epp', 'vfp', 'vpp');
+    public $settings_fields = array('theme', 'url', 'version', 'key', 'tag_text', 'tag_exact', 'venue_id', 'user_id', 'epp', 'vfp', 'vpp');
 
     /**
      * __construct
@@ -204,6 +204,9 @@ class Admin extends AbstractAdmin
             'c24_api_venue_id', 'Venue ID', array($this, 'createFieldVenueId'), 'c24-settings-api', 'settings_api'
         );
         add_settings_field(
+            'c24_api_user_id', 'User ID', array($this, 'createFieldUserId'), 'c24-settings-api', 'settings_api'
+        );
+        add_settings_field(
             'c24_api_epp', 'Events per page', array($this, 'createFieldEpp'), 'c24-settings-api', 'settings_api'
         );
         add_settings_field(
@@ -339,6 +342,23 @@ class Admin extends AbstractAdmin
     {
         ?>
             <input type="text" id="input_c24api_venue_id" name="c24[venue_id]" value="<?php echo $this->settings->getSetting('venue_id', '');
+        ?>" size="128" />
+        <?php
+
+    }
+
+    /**
+     * createFieldUserId
+     *
+     * Create the Listing 'UserID' field to limit searches to specific user.
+     *
+     * @return void
+     * @access public
+     */
+    public function createFieldUserId()
+    {
+        ?>
+            <input type="text" id="input_c24api_user_id" name="c24[user_id]" value="<?php echo $this->settings->getSetting('user_id', '');
         ?>" size="128" />
         <?php
 
