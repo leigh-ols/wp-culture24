@@ -39,7 +39,7 @@ abstract class AbstractDecorator
      * @throws [ExceptionClass] [Description]
      * @access
      */
-    public function __construct(RecordInterface $object)
+    public function __construct($object)
     {
         $this->object = $object;
     }

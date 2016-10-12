@@ -30,7 +30,5 @@ use c24\Service\Validator\ValidatorInterface;
  */
 interface ThemeInterface
 {
-    public function __construct(SettingsInterface $settings, Api $api, ValidatorInterface $validator);
-    // @TODO add required functions here
 }
 
