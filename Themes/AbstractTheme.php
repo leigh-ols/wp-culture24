@@ -177,7 +177,9 @@ abstract class AbstractTheme implements ThemeInterface
     protected function includeThemeFile($file, $vars = array())
     {
         // Make vars available to template file
-        $vars['input'] = $this->getInput();
+        if (!isset($vars['input'])) {
+            $vars['input'] = $this->getInput();
+        }
         foreach ($vars as $k => $v) {
             ${$k} = $v;
         }
