@@ -133,18 +133,28 @@ class GumpValidator extends AbstractDecorator implements ValidatorInterface
     }
 
     /**
-     * run
+     * getErrors
      *
-     * @param mixed $data
-     * @param mixed $check_fields
+     * Convert the errors into a nice standard format
      *
-     * @return void
-     * @throws [ExceptionClass] [Description]
-     * @access
+     * @return array
+     * @access public
      */
-    public function run(array $data, $check_fields = false)
+    public function getErrors()
     {
-        return $this->object->run($data, $check_fields);
+        $new_errors = array();
+        $messages = $this->getReadableErrors();
+        $errors = $this->errors();
+
+        foreach ($errors as $k => $v) {
+            $v['message'] = $messages[$k];
+            if (!isset($new_errors[$v['field']])) {
+                $new_errors[$v['field']] = array();
+            }
+            $new_errors[$v['field']][] = $v;
+        }
+
+        return $new_errors;
     }
 }
 

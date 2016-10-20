@@ -16,6 +16,7 @@ namespace c24;
 
 use \GUMP as RealValidator;
 use c24\Service\Validator\GumpValidator as Validator;
+use c24\Service\FormBuilder\FormBuilder;
 use c24\Service\Api\Culture24\Api as Culture24Api;
 use c24\Service\Settings\WPSettings as Settings;
 use c24\Themes\ThemeInterface as Theme;
@@ -109,6 +110,7 @@ class WPCulture24
         $real_validator = new RealValidator();
 
         $this->setValidator(new Validator($real_validator));
+        $this->setFormBuilder(new FormBuilder());
         $this->setApi(new Culture24Api());
         $this->setSettings(new Settings());
 
@@ -117,7 +119,8 @@ class WPCulture24
             new $theme_namespace(
                 $this->getSettings(),
                 $this->getApi(),
-                $this->getValidator()
+                $this->getValidator(),
+                $this->getFormBuilder()
             )
         );
 
@@ -199,6 +202,32 @@ class WPCulture24
     public function setValidator(Validator $validator)
     {
         $this->services['Validator'] = $validator;
+        return $this;
+    }
+
+    /**
+     * getFormBuilder
+     *
+     *
+     * @return FormBuilder
+     * @access public
+     */
+    public function getFormBuilder()
+    {
+        return $this->getService('FormBuilder');
+    }
+
+    /**
+     * setFormBuilder
+     *
+     * @param FormBuilder $formbuilder
+     *
+     * @return self
+     * @access public
+     */
+    public function setFormBuilder(FormBuilder $formbuilder)
+    {
+        $this->services['FormBuilder'] = $formbuilder;
         return $this;
     }
 

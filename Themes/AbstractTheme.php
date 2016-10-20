@@ -17,6 +17,7 @@ namespace c24\Themes;
 use c24\Service\Settings\SettingsInterface;
 use c24\Service\Api\Culture24\Api as Api;
 use c24\Service\Validator\ValidatorInterface;
+use c24\Service\FormBuilder\FormBuilder;
 
 /**
  * Class AbstractTheme
@@ -116,6 +117,20 @@ abstract class AbstractTheme implements ThemeInterface
     private $input = array();
 
     /**
+     * validator
+     *
+     * @var ValidatorInterface
+     */
+    protected $validator;
+
+    /**
+     * form_builder
+     *
+     * @var FormBuilder
+     */
+    protected $form_builder;
+
+    /**
      * __construct
      *
      * @param SettingsInterface $settings
@@ -125,11 +140,12 @@ abstract class AbstractTheme implements ThemeInterface
      * @return void
      * @access public
      */
-    public function __construct(SettingsInterface $settings, Api $api, ValidatorInterface $validator)
+    public function __construct(SettingsInterface $settings, Api $api, ValidatorInterface $validator, FormBuilder $form_builder)
     {
         $this->settings = $settings;
         $this->api = $api;
         $this->validator = $validator;
+        $this->form_builder = $form_builder;
 
         $this->setInput($_REQUEST);
 
@@ -141,6 +157,10 @@ abstract class AbstractTheme implements ThemeInterface
         add_shortcode('c24page', array($this, 'shortcode'));
         // @NOTE Race hazard.... WPCulture24 class fires on init...
         add_filter('init', array($this, 'feedHook'));
+
+        if (method_exists($this, 'init')) {
+            $this->init();
+        }
     }
 
     /**
@@ -182,6 +202,9 @@ abstract class AbstractTheme implements ThemeInterface
         }
         if (!isset($vars['validator'])) {
             $vars['validator'] = $this->validator;
+        }
+        if (!isset($vars['form'])) {
+            $vars['form'] = $this->form_builder;
         }
         foreach ($vars as $k => $v) {
             ${$k} = $v;
@@ -629,6 +652,7 @@ abstract class AbstractTheme implements ThemeInterface
             // Filter and validate our data
             $this->input = $this->validator->filter($data, $this->input_filters);
             $valid = $this->validator->validate($this->input, $this->input_rules);
+            $this->form_builder->setErrors($this->validator->getErrors());
         }
     }
 }
