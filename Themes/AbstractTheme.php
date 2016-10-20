@@ -180,6 +180,9 @@ abstract class AbstractTheme implements ThemeInterface
         if (!isset($vars['input'])) {
             $vars['input'] = $this->getInput();
         }
+        if (!isset($vars['validator'])) {
+            $vars['validator'] = $this->validator;
+        }
         foreach ($vars as $k => $v) {
             ${$k} = $v;
         }
@@ -604,10 +607,6 @@ abstract class AbstractTheme implements ThemeInterface
      */
     protected function setInput($input)
     {
-        // Give our validator some rules to work by.
-        $this->validator->validationRules($this->input_rules);
-        $this->validator->filterRules($this->input_filters);
-
         // Strip unexpected keys/values,
         $unsanitized_input = array();
         foreach ($this->input_fields as $v) {
@@ -628,14 +627,8 @@ abstract class AbstractTheme implements ThemeInterface
 
         if ($data) {
             // Filter and validate our data
-            $this->input = $this->validator->run($data);
-        }
-
-        // Check if it validated
-        if (!$this->input && count($unsanitized_input)) {
-            // @TODO check for errors and handle them...
-            echo $this->validator->getReadableErrors(true);
-            die();
+            $this->input = $this->validator->filter($data, $this->input_filters);
+            $valid = $this->validator->validate($this->input, $this->input_rules);
         }
     }
 }
