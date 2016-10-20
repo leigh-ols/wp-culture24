@@ -15,6 +15,7 @@
 namespace c24\Service\Validator;
 
 use \GUMP as RealValidator;
+use c24\Service\Decorator\AbstractDecorator;
 
 /**
  * Class GumpValidator
@@ -33,23 +34,8 @@ use \GUMP as RealValidator;
  * @license    Copyright Orangeleaf Systems Ltd 2013
  * @link       http://orangeleaf.com
  */
-class GumpValidator implements ValidatorInterface
+class GumpValidator extends AbstractDecorator implements ValidatorInterface
 {
-    protected $validator;
-
-    /**
-     * __construct
-     *
-     * @param Validator $validator
-     *
-     * @return void
-     * @access public
-     */
-    public function __construct(RealValidator $validator)
-    {
-        $this->validator = $validator;
-    }
-
     /**
      * Set a readable name for a specified field names.
      *
@@ -60,7 +46,7 @@ class GumpValidator implements ValidatorInterface
      */
     public function setFieldName($field, $readable_name)
     {
-        return $this->validator->set_field_name($field, $readable_name);
+        return $this->object->set_field_name($field, $readable_name);
     }
 
     /**
@@ -74,7 +60,7 @@ class GumpValidator implements ValidatorInterface
      */
     public function sanitize(array $input, array $fields = array(), $utf8_encode = true)
     {
-        return $this->validator->sanitize($input, $fields, $utf8_encode);
+        return $this->object->sanitize($input, $fields, $utf8_encode);
     }
 
     /**
@@ -89,7 +75,7 @@ class GumpValidator implements ValidatorInterface
      */
     public function validate(array $input, array $ruleset)
     {
-        return $this->validator->validator($input, $ruleset);
+        return $this->object->validate($input, $ruleset);
     }
 
     /**
@@ -101,7 +87,7 @@ class GumpValidator implements ValidatorInterface
      */
     public function getErrorsArray($convert_to_string = null)
     {
-        return $this->validator->get_errors_array($convert_to_string);
+        return $this->object->get_errors_array($convert_to_string);
     }
 
     /**
@@ -118,17 +104,17 @@ class GumpValidator implements ValidatorInterface
      */
     public function filter(array $input, array $filterset)
     {
-        return $this->validator->filter($input, $filterset);
+        return $this->object->filter($input, $filterset);
     }
 
     public function validationRules(array $rules)
     {
-        return $this->validator->validation_rules($rules);
+        return $this->object->validation_rules($rules);
     }
 
     public function filterRules(array $rules)
     {
-        return $this->validator->filter_rules($rules);
+        return $this->object->filter_rules($rules);
     }
 
     /**
@@ -143,7 +129,7 @@ class GumpValidator implements ValidatorInterface
      */
     public function getReadableErrors($convert_to_string = false, $field_class = 'gump-field', $error_class = 'gump-error-message')
     {
-        return $this->validator->get_readable_errors($convert_to_string, $field_class, $error_class);
+        return $this->object->get_readable_errors($convert_to_string, $field_class, $error_class);
     }
 
     /**
@@ -158,7 +144,7 @@ class GumpValidator implements ValidatorInterface
      */
     public function run(array $data, $check_fields = false)
     {
-        return $this->validator->run($data, $check_fields);
+        return $this->object->run($data, $check_fields);
     }
 }
 
