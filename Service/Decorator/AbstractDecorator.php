@@ -55,7 +55,13 @@ abstract class AbstractDecorator
      */
     public function __call($method, $args)
     {
-        return call_user_func_array(array($this->object, $method), $args);
+        $value = call_user_func_array(array($this->object, $method), $args);
+
+        // If our object has returned itself... give them back this decorator instead!
+        if ($value === $this->object) {
+            return $this;
+        }
+        return $value;
     }
 
     /**

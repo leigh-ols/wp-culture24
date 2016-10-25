@@ -143,7 +143,7 @@ abstract class AbstractTheme implements ThemeInterface
     public function __construct(SettingsInterface $settings, Api $api, ValidatorInterface $validator, FormBuilder $form_builder)
     {
         $this->settings = $settings;
-        $this->api = $api;
+        $this->api = $this->decorateApi($api);
         $this->validator = $validator;
         $this->form_builder = $form_builder;
 
@@ -255,9 +255,8 @@ abstract class AbstractTheme implements ThemeInterface
         /** @var $obj Api */
         $obj = $this->getApi()->setOptions($options);
         if ($obj->requestID($event)) {
-            $c24objects = $obj->get_objects();
-            foreach ($c24objects as $object) {
-                $c24event = $this->decorateEvents($object);
+            $c24objects = $obj->getEvents();
+            foreach ($c24objects as $c24event) {
                 $this->includeThemeFile('page-event.php', array('c24event' => $c24event));
             }
         } else {
@@ -280,10 +279,8 @@ abstract class AbstractTheme implements ThemeInterface
         /** @var $obj Api */
         $obj = $this->getApi()->setOptions($options);
         if ($obj->requestID($venue)) {
-            $c24objects = $obj->get_objects();
-            foreach ($c24objects as $object) {
-                $c24venue = $this->decorateVenues($object);
-
+            $c24objects = $obj->getVenues();
+            foreach ($c24objects as $c24venue) {
                 // Get upcoming events for the venue
                 $venue_events = false;
                 $event_options = array(
@@ -293,7 +290,7 @@ abstract class AbstractTheme implements ThemeInterface
                 );
                 $obj = $this->getApi()->setOptions($event_options);
                 if ($obj->requestSet()) {
-                    $venue_events = $this->decorateEvents($obj->get_objects());
+                    $venue_events = $obj->getEvents();
                 } else {
                     $c24error = $obj->get_message();
                 }
@@ -323,6 +320,7 @@ abstract class AbstractTheme implements ThemeInterface
     public function displayListing()
     {
         $obj = $this->setupListingApi();
+
         $c24perpage = $this->settings->getSetting('epp');
         $c24objects = array();
         $c24error = $c24debug = false;
@@ -350,8 +348,7 @@ abstract class AbstractTheme implements ThemeInterface
         }
 
         if ($obj->requestSet()) {
-
-            $c24objects = $this->decorateEvents($obj->get_objects());
+            $c24objects = $obj->getEvents();
 
             if ($date_range = $obj->get_dates()) {
                 $date_start = str_replace('/', '-', substr($date_range, 0, strpos($date_range, ',')));
@@ -510,82 +507,6 @@ abstract class AbstractTheme implements ThemeInterface
     }
 
     /**
-     * decorateEvent
-     *
-     * Accepts single event or array of.
-     * Decorates with Theme's EventDecorator, if that doesn't exist, decorates
-     * with c24\Themes\EventDecorator instead
-     *
-     * @param c24\Service\Api\Culture24\Event $event[]
-     *
-     * @return mixed Decorated event(s)
-     * @access protected
-     */
-    protected function decorateEvents($events)
-    {
-        $decorator_class = $this->settings->getCurrentThemeNamespace().'/EventDecorator';
-        if (!class_exists($decorator_class)) {
-            $decorator_class = '\c24\Themes\EventDecorator';
-        }
-
-        // If it's just a single event, decorate it and return it.
-        if (!is_array($events)) {
-            return $this->decorate($events, $decorator_class);
-        }
-
-        // If we have an array of events, decorate them all and return the
-        // array
-        foreach ($events as $k => $event) {
-            $events[$k] = $this->decorate($event, $decorator_class);
-        }
-        return $events;
-    }
-
-    /**
-     * decorateVenue
-     *
-     * Accepts single venue or array of.
-     * Decorates with Theme's VenueDecorator, if that doesn't exist, decorates
-     * with c24\Themes\VenueDecorator instead
-     *
-     * @param c24\Service\Api\Culture24\Venue $venue[]
-     *
-     * @return mixed Decorate venue(s)
-     * @access protected
-     */
-    protected function decorateVenues($venues)
-    {
-        $decorator_class = $this->settings->getCurrentThemeNamespace().'/VenueDecorator';
-        if (!class_exists($decorator_class)) {
-            $decorator_class = '\c24\Themes\VenueDecorator';
-        }
-
-        if (!is_array($venues)) {
-            return $this->decorate($venues, $decorator_class);
-        }
-
-        foreach ($venues as $k => $venue) {
-            $venues[$k] = $this->decorate($venue, $decorator_class);
-        }
-
-        return $venues;
-    }
-
-    /**
-     * Decorate wrap a single object with another.
-     *
-     * @param mixed $object Object to decorate
-     * @param string $decorator Namespace of the class to decorate with.
-     *
-     * @return $decorator
-     * @access protected
-     */
-    protected function decorate($object, $decorator)
-    {
-        return new $decorator($object);
-    }
-
-    /**
      * Return validator+filtered user input.
      *
      * Accepts multiple parameters for specific user input keys.
@@ -654,5 +575,27 @@ abstract class AbstractTheme implements ThemeInterface
             $valid = $this->validator->validate($this->input, $this->input_rules);
             $this->form_builder->setErrors($this->validator->getErrors());
         }
+    }
+
+    /**
+     * decorateApi
+     *
+     * Our api decorator allows our themes to modify the output of the API
+     * functions.
+     * It also decorates the events/venues recieved from the api, allowing
+     * individual themes to modify the output of their functions also.
+     *
+     * @param Api $api
+     *
+     * @return Api
+     * @access protected
+     */
+    protected function decorateApi($api)
+    {
+        $decorator_class = $this->settings->getCurrentThemeNamespace().'/ApiDecorator';
+        if (!class_exists($decorator_class)) {
+            $decorator_class = '\c24\Themes\ApiDecorator';
+        }
+        return new $decorator_class($api, $this->settings->getCurrentThemeNamespace());
     }
 }
