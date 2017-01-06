@@ -113,6 +113,11 @@ class Api
     /**
      * @var string
      */
+    protected $_userID = '';
+
+    /**
+     * @var string
+     */
     protected $_sort = '';
 
     /**
@@ -301,6 +306,7 @@ class Api
         $this->_request .= $this->_get_request_arg('keywords');
         $this->_request .= $this->_get_request_arg('audience');
         $this->_request .= $this->_get_request_arg('venueID');
+        $this->_request .= $this->_get_request_arg('userID');
         $this->_request .= $this->_get_request_arg('sort');
         if ($this->_request()) {
             $this->_found = $this->_data_parsed->result->found;
@@ -465,6 +471,11 @@ class Api
         case 'venueID':
             if (!empty($this->_venueID)) {
                 $result = '&q.venueID=' . $this->_venueID;
+            }
+            break;
+        case 'userID':
+            if (!empty($this->_userID)) {
+                $result = '&q.userID=' . $this->_userID;
             }
             break;
         case 'audience':
