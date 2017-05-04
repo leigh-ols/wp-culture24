@@ -155,6 +155,7 @@ abstract class AbstractTheme implements ThemeInterface
         $this->theme_path = dirname($theme_reflection->getFileName());
 
         add_shortcode('c24page', array($this, 'shortcode'));
+        add_shortcode('c24slider', array($this, 'slider'));
         // @NOTE Race hazard.... WPCulture24 class fires on init...
         add_filter('init', array($this, 'feedHook'));
 
@@ -212,6 +213,21 @@ abstract class AbstractTheme implements ThemeInterface
 
         include $this->getThemePath().'/'.$file;
         return $this;
+    }
+
+    /**
+     * slider
+     *
+     *
+     * @return void
+     * @throws [ExceptionClass] [Description]
+     * @access
+     */
+    public function slider()
+    {
+        ob_start();
+        $this->displaySlider();
+        return ob_get_clean();
     }
 
     /**
@@ -375,6 +391,48 @@ abstract class AbstractTheme implements ThemeInterface
             </div>
         <?php
 
+    }
+
+    public function displaySlider()
+    {
+        $obj = $this->setupListingApi();
+        $c24perpage = $this->settings->getSetting('epp');
+        $c24objects = array();
+        $date_start = $date_end = '';
+        $c24regions = $this->getApi()->getRegions();
+        $audiences = $this->getApi()->getAudiences();
+        $types = $this->getApi()->getTypes();
+
+        $form_vars = array(
+            'date_start' => $date_start,
+            'date_end' => $date_end,
+            'audiences' => $audiences,
+            'audience' => '',
+            'types' => $types,
+            'type' => ''
+        );
+
+        // Override defaults with validated+sanitized+filters user submitted
+        // values
+        $input = $this->getInput();
+        foreach ($form_vars as $k => $v) {
+            if (isset($input[$k])) {
+                $form_vars[$k] = $input[$k];
+            }
+        }
+
+        if ($obj->requestSet()) {
+            $c24objects = $obj->getEvents();
+
+            if ($date_range = $obj->get_dates()) {
+                $date_start = str_replace('/', '-', substr($date_range, 0, strpos($date_range, ',')));
+                $date_end = str_replace('/', '-', substr($date_range, strpos($date_range, ',') + 1));
+            }
+        } else {
+            $c24error = $obj->get_message();
+        }
+
+        $this->includeThemeFile('content-slider.php', array('c24objects' => $c24objects));
     }
 
     /**
