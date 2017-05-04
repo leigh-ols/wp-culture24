@@ -102,9 +102,8 @@ if ($_REQUEST['map'] == '') {
 
 jQuery(document).ready(function() {
     jQuery('.datepicker').datepicker({
-        dateFormat: 'dd-mm-yy'
+        dateFormat: 'dd/mm/yy'
     });
-
 });
 
 </script>

@@ -45,7 +45,7 @@ if (!$c24charges && $c24event->get_free()) {
 
     <div class="c24event__details">
         <span class="c24event__venue-name"><?php echo $c24venue; ?></span><br/>
-        <span class="c24event__title"><?php echo $c24title; ?></span><br/>
+        <span class="c24event__title"><a href="<?php echo $c24url;?>"><?php echo $c24title; ?></a></span><br/>
         <span class="c24event__location"><?php echo $c24location; ?></span><br/>
 
         <span class="c24event__type"><span class="c24event__key">Type:</span> <?php echo $c24type; ?></span><br/>
