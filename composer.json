@@ -1,5 +1,6 @@
 {
     "name": "iwmdigital/wp-culture24",
+    "type": "wordpress-plugin",
     "authors": [
         {
             "name": "Leigh",
@@ -10,6 +11,7 @@
         "psr-4": {"c24\\": "./"}
     },
     "require": {
+        "composer/installers": "^1.4",
         "wixel/gump": "dev-master"
     }
 }
