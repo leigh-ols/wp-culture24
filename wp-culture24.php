@@ -33,7 +33,11 @@ define('CULTURE24_API_DATE_END_DEFAULT', date(CULTURE24_API_DATE_FORMAT_INPUT, t
 define('C24_SLUG', 'events');
 
 // Composer PSR-4 auto-loader
-require __DIR__ . '/vendor/autoload.php';
+// We check to see if this exists because it's possible we've been included as
+// a dependency in a higher project
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
+}
 
 global $__c24;
 $__c24 = new WPCulture24();
